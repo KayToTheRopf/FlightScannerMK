@@ -136,7 +136,7 @@ def main(argv: List[str] | None = None) -> int:
     logging.info("%d Angebote als echte Schnäppchen eingestuft.", len(deals))
 
     sent_channels = dispatch_notifications(config, deals, dry_run=args.dry_run)
-    if deals and (sent_channels > 0 or not args.dry_run):
+    if deals and sent_channels > 0:
         analyzer.mark_deals_notified(deals)
 
     analyzer.save_history()

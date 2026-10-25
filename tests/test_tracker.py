@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import yaml
 
 from src.analyzer import DealAnalyzer, build_exclude_issue_url
 from src.handle_feedback import parse_and_execute_feedback
-from src.models import FlightOffer
+from src.models import EvaluatedDeal, FlightOffer
+from src.notifiers.discord import DiscordNotifier, MAX_EMBED_TEXT_PER_MESSAGE
 from src.notifiers.github_issue import GitHubIssueNotifier
 
 
@@ -190,3 +192,50 @@ def test_github_markdown_report_contains_exclude_link() -> None:
     assert "Palma de Mallorca" in md
     assert "🚫 Ort ausschließen" in md
     assert "exclude%3APMI" in md
+
+
+def test_discord_splits_embeds_to_respect_message_size_limit(monkeypatch) -> None:
+    deals = []
+    for index in range(10):
+        offer = FlightOffer(
+            origin="FMM",
+            origin_name="Memmingen",
+            destination=f"AAA{index}",
+            destination_name=f"Destination {index}",
+            destination_country="X" * 900,
+            outbound_date="2026-11-10",
+            inbound_date="2026-11-17",
+            price_eur=39.99,
+            airline="Ryanair",
+            provider="ryanair",
+            booking_url="https://example.test/flight",
+        )
+        deals.append(
+            EvaluatedDeal(
+                offer=offer,
+                threshold_eur=65.0,
+                historical_avg_eur=None,
+                discount_vs_avg_percent=None,
+                discount_vs_threshold_percent=38.5,
+                deal_score=43.5,
+                reason="38% unter Preisgrenze",
+            )
+        )
+
+    sent_payloads = []
+
+    def post(_url, *, json, timeout):
+        sent_payloads.append(json)
+        return SimpleNamespace(status_code=204)
+
+    monkeypatch.setattr("src.notifiers.discord.requests.post", post)
+
+    assert DiscordNotifier("https://example.test/webhook").send_deals(deals)
+    assert len(sent_payloads) > 1
+    sent_embeds = []
+    for payload in sent_payloads:
+        embeds = payload["embeds"]
+        assert len(embeds) <= 10
+        assert sum(len(embed["title"]) + len(embed["description"]) for embed in embeds) <= MAX_EMBED_TEXT_PER_MESSAGE
+        sent_embeds.extend(embeds)
+    assert len(sent_embeds) == len(deals)
