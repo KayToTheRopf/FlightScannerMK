@@ -1,0 +1,61 @@
+name: "🚫 Feedback & Blacklist Handler"
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  process-feedback:
+    # Nur ausführen, wenn der Repository-Eigentümer selbst ein Exclude-Issue öffnet oder kommentiert
+    if: >
+      github.actor == github.repository_owner &&
+      (
+        (github.event_name == 'issues' && startsWith(github.event.issue.title, 'exclude:')) ||
+        (github.event_name == 'issue_comment' && (
+          contains(github.event.comment.body, '/exclude') ||
+          contains(github.event.comment.body, '!exclude') ||
+          contains(github.event.comment.body, '/ignore') ||
+          contains(github.event.comment.body, '/watch')
+        ))
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Abhängigkeiten installieren
+        run: pip install -r requirements.txt
+
+      - name: Blacklist / Wunschliste aktualisieren
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          CLOSE_ISSUE_AFTER_FEEDBACK: ${{ github.event_name == 'issues' && 'true' || 'false' }}
+          FEEDBACK_TEXT: ${{ github.event_name == 'issues' && github.event.issue.title || github.event.comment.body }}
+        run: python -m src.handle_feedback
+
+      - name: Aktualisierte Blacklist / Config committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add config/blacklist.json config/search_config.yaml
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(config): update blacklist/wishlist via user feedback"
+            git push
+          fi

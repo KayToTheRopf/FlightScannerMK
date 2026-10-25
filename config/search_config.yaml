@@ -1,0 +1,75 @@
+# Konfiguration für die automatische Flugpreis-Suche (MUC & FMM)
+
+departure_airports:
+  - code: "FMM"
+    name: "Memmingen"
+    max_explore_price_eur: 55.0      # Absoluter Schnäppchenpreis (Hin & Zurück) für Überall-Suche ab Memmingen
+  - code: "MUC"
+    name: "München"
+    max_explore_price_eur: 120.0     # Absoluter Schnäppchenpreis (Hin & Zurück) für Überall-Suche ab München
+
+search_window:
+  months_ahead: 6                    # Suchhorizont: nächste 6 Monate
+  min_stay_days: 3                   # Mindestaufenthalt in Tagen
+  max_stay_days: 14                  # Maximalaufenthalt in Tagen
+  adults: 1
+  currency: "EUR"
+  max_stops: 1                       # 0 = nur Direktflüge, 1 = max. 1 Umstieg
+
+deal_scoring:
+  # Ab wie viel Prozent unter dem historischen Routen-Durchschnitt gilt ein Preis als echtes Schnäppchen?
+  min_discount_vs_history_percent: 25.0
+  # Falls noch keine Historie (< 2 Datenpunkte) vorliegt, muss der Preis mind. X % unter dem Max-Limit liegen:
+  first_seen_margin_percent: 10.0
+  # Cooldown in Tagen, damit derselbe Deal (Route + Datum + ähnlicher Preis) nicht doppelt gemeldet wird:
+  notification_cooldown_days: 7
+  # Maximale Anzahl an Deals pro Benachrichtigungslauf (Top-Schnäppchen zuerst):
+  max_deals_per_run: 10
+
+# Feste Wunschziele (werden gezielt über alle Provider inkl. Google Flights & Travelpayouts überwacht)
+wishlist_destinations:
+  - code: "PMI"
+    name: "Palma de Mallorca"
+    country: "Spanien"
+    max_price_eur: 65.0
+  - code: "LIS"
+    name: "Lissabon"
+    country: "Portugal"
+    max_price_eur: 115.0
+  - code: "BCN"
+    name: "Barcelona"
+    country: "Spanien"
+    max_price_eur: 85.0
+  - code: "ROM"
+    name: "Rom (FCO/CIA)"
+    country: "Italien"
+    airports: ["FCO", "CIA"]
+    max_price_eur: 70.0
+  - code: "ATH"
+    name: "Athen"
+    country: "Griechenland"
+    max_price_eur: 95.0
+  - code: "TFS"
+    name: "Teneriffa Süd"
+    country: "Spanien"
+    max_price_eur: 110.0
+
+providers:
+  ryanair:
+    enabled: true
+  travelpayouts:
+    enabled: true
+    verify_with_google_flights: true  # Verifiziert gecachte Travelpayouts-Treffer live
+  google_flights:
+    enabled: true
+    # Wie viele zufällige/rotierende Wunschziel-Datumsfenster pro Lauf live abgefragt werden sollen:
+    sample_dates_per_wishlist: 3
+
+notifications:
+  discord:
+    enabled: true                     # Nutzt Umgebungsvariable DISCORD_WEBHOOK_URL
+  github_issue:
+    enabled: true                     # Nutzt GITHUB_TOKEN & GITHUB_REPOSITORY (in GitHub Actions automatisch gesetzt)
+    issue_label: "flight-deal"
+  email:
+    enabled: false                    # Nutzt SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, EMAIL_TO
