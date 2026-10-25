@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from src.deal_page import get_deals_page_url, render_deals_page, write_deals_page
 from src.models import EvaluatedDeal, FlightOffer
 from src.notifiers.discord import DiscordNotifier
+from src.run_search import dispatch_notifications
 
 
 def _deal() -> EvaluatedDeal:
@@ -94,3 +95,20 @@ def test_discord_deal_summary_rejects_invalid_page_url(monkeypatch) -> None:
     notifier = DiscordNotifier(webhook_url="https://discord.com/api/webhooks/test")
 
     assert not notifier.send_deal_summary([_deal()], "https://")
+
+
+def test_dispatch_notifications_uses_configured_deal_page_url(monkeypatch) -> None:
+    sent = []
+    monkeypatch.setenv("FLIGHT_DEALS_PAGE_URL", "https://example.com/deals")
+    monkeypatch.setattr(
+        "src.run_search.DiscordNotifier.send_deal_summary",
+        lambda self, deals, page_url: sent.append(page_url) or True,
+    )
+
+    sent_channels = dispatch_notifications(
+        {"notifications": {"github_issue": {"enabled": False}, "email": {"enabled": False}}},
+        [_deal()],
+    )
+
+    assert sent_channels == 1
+    assert sent == ["https://example.com/deals/"]
