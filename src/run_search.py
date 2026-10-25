@@ -9,6 +9,7 @@ from typing import List
 import yaml
 
 from src.analyzer import DealAnalyzer
+from src.deal_page import get_deals_page_url, write_deals_page
 from src.models import EvaluatedDeal, FlightOffer
 from src.notifiers.discord import DiscordNotifier
 from src.notifiers.email_smtp import EmailSmtpNotifier
@@ -21,6 +22,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG_PATH = ROOT_DIR / "config" / "search_config.yaml"
 DEFAULT_BLACKLIST_PATH = ROOT_DIR / "config" / "blacklist.json"
 DEFAULT_HISTORY_PATH = ROOT_DIR / "data" / "price_history.json"
+DEFAULT_DEALS_PAGE_PATH = ROOT_DIR / "site" / "index.html"
 
 
 def load_config(path: Path = DEFAULT_CONFIG_PATH) -> dict:
@@ -93,7 +95,8 @@ def dispatch_notifications(config: dict, deals: List[EvaluatedDeal], dry_run: bo
     sent_channels = 0
 
     if notif_cfg.get("discord", {}).get("enabled", True):
-        if DiscordNotifier().send_deals(deals):
+        page_url = get_deals_page_url(configured_url=os.getenv("FLIGHT_DEALS_PAGE_URL", ""))
+        if DiscordNotifier().send_deal_summary(deals, page_url):
             sent_channels += 1
 
     if notif_cfg.get("github_issue", {}).get("enabled", True):
@@ -134,6 +137,9 @@ def main(argv: List[str] | None = None) -> int:
 
     deals = analyzer.evaluate_offers(offers)
     logging.info("%d Angebote als echte Schnäppchen eingestuft.", len(deals))
+
+    if not args.dry_run:
+        write_deals_page(deals, DEFAULT_DEALS_PAGE_PATH)
 
     sent_channels = dispatch_notifications(config, deals, dry_run=args.dry_run)
     if deals and sent_channels > 0:

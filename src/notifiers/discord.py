@@ -4,6 +4,7 @@ import logging
 import os
 from datetime import datetime
 from typing import List, Optional
+from urllib.parse import urlsplit
 
 import requests
 
@@ -119,4 +120,37 @@ class DiscordNotifier:
             return True
         except Exception as exc:
             logger.error("DiscordNotifier Fehler: %s", exc)
+            return False
+
+    def send_deal_summary(self, deals: List[EvaluatedDeal], page_url: str) -> bool:
+        if not deals:
+            return False
+        if not self.webhook_url:
+            logger.info("DiscordNotifier: Kein DISCORD_WEBHOOK_URL konfiguriert – überspringe Discord-Versand.")
+            return False
+        parsed_page_url = urlsplit(page_url)
+        if parsed_page_url.scheme != "https" or not parsed_page_url.netloc:
+            logger.warning("DiscordNotifier: Keine gültige HTTPS-URL zur Deal-Seite verfügbar.")
+            return False
+
+        cheapest = min(deals, key=lambda deal: deal.offer.price_eur)
+        message = (
+            f"🎯 **{len(deals)} echte Flugschnäppchen gefunden!**\n"
+            f"💶 Günstigster Flug: **{cheapest.offer.price_eur:.2f} €** "
+            f"({cheapest.offer.origin} → {cheapest.offer.destination_name})\n"
+            f"👉 [Alle Angebote ansehen und Aktionen nutzen]({page_url})"
+        )
+        try:
+            resp = requests.post(
+                self.webhook_url,
+                json={"username": "✈️ Schnäppchen-Radar (MUC & FMM)", "content": message},
+                timeout=self.timeout,
+            )
+            if resp.status_code not in (200, 204):
+                logger.warning("DiscordNotifier: Zusammenfassung fehlgeschlagen (HTTP %s) – %s", resp.status_code, resp.text[:200])
+                return False
+            logger.info("DiscordNotifier: Deal-Zusammenfassung für %d Angebote erfolgreich gesendet.", len(deals))
+            return True
+        except Exception as exc:
+            logger.error("DiscordNotifier Fehler beim Senden der Zusammenfassung: %s", exc)
             return False

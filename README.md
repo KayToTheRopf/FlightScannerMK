@@ -2,7 +2,7 @@
 
 Vollautomatische, **100 % kostenlose** Flugpreis-Suche für Hin- und Rückflüge (3–14 Tage Aufenthalt in den nächsten 6 Monaten) ab **München (`MUC`)** und **Memmingen (`FMM`)**.
 
-Läuft **2x täglich in der Cloud über GitHub Actions** (dein PC muss nicht eingeschaltet sein) und benachrichtigt dich nur bei **echten Schnäppchen** über **Discord**, **GitHub Issues** oder **E-Mail** – inklusive **1-Klick-Rückmeldung**, um uninteressante Orte dauerhaft auszuschließen (`Blacklist`).
+Läuft **2x täglich in der Cloud über GitHub Actions** (dein PC muss nicht eingeschaltet sein) und benachrichtigt dich nur bei **echten Schnäppchen** über **Discord**, **GitHub Issues** oder **E-Mail**. Discord erhält eine kompakte Nachricht mit Link zur aktuellen Deal-Seite; dort findest du die Angebote und die Buchungs-/Ausschlussaktionen.
 
 ---
 
@@ -23,7 +23,7 @@ Läuft **2x täglich in der Cloud über GitHub Actions** (dein PC muss nicht ein
    - Verhindert doppelte Meldungen durch einen 7-Tage-Cooldown (es sei denn, der Preis fällt nochmals um mindestens 15 %).
 
 4. **Interaktive Rückmeldung – Orte mit 1 Klick ausschließen (`src/handle_feedback.py`):**
-   - Jede Benachrichtigung (egal ob in Discord, GitHub oder per E-Mail) enthält neben dem `[✈️ Flug ansehen & buchen]`-Link einen **`[🚫 Ort künftig ausschließen]`**-Link.
+   - Die Deal-Seite sowie Benachrichtigungen per GitHub oder E-Mail enthalten neben dem `[✈️ Flug ansehen & buchen]`-Link einen **`[🚫 Ort künftig ausschließen]`**-Link. Discord verweist mit einer einzelnen Zusammenfassung auf die Deal-Seite.
    - Klickst du darauf, öffnet sich ein vorausgefülltes GitHub-Issue (`exclude:TIA`). Nach einem Tipp auf *„Submit new issue“* trägt die GitHub Action (`feedback_handler.yml`) den Ort automatisch in `config/blacklist.json` ein, bestätigt es auf Discord/GitHub und schließt das Issue wieder.
    - **Alternativ per Kommentar (oder E-Mail-Antwort auf ein GitHub-Issue):**
      - `/exclude TIA` (schließt Flughafen TIA aus)
@@ -48,7 +48,12 @@ Gehe in deinem GitHub-Repository auf **Settings ➔ Secrets and variables ➔ Ac
 | `TRAVELPAYOUTS_TOKEN` | Empfohlen für MUC | Kostenlos registrieren auf [travelpayouts.com](https://www.travelpayouts.com/), unter *Profile ➔ API Token* kopieren. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_TO` | Optional | Nur falls du zusätzlich klassische HTML-E-Mails (und `notifications.email.enabled: true` in `search_config.yaml`) nutzen möchtest. |
 
-### 3. Wunschziele & Preisgrenzen anpassen
+### 3. Deal-Seite einmalig aktivieren
+Öffne **Settings ➔ Pages** und setze unter **Build and deployment** die Quelle auf **GitHub Actions**. Nach dem nächsten erfolgreichen Suchlauf wird die Seite automatisch veröffentlicht bzw. aktualisiert. Die Standardadresse ist `https://<owner>.github.io/<repository>/`.
+
+Die Seite enthält die gefundenen Flugangebote und deren Buchungs-/Ausschlusslinks. Veröffentliche keine vertraulichen Angaben in diesen Deal-Daten. Bei einer eigenen Pages-Domain kannst du unter **Settings ➔ Secrets and variables ➔ Actions ➔ Variables** die Variable `FLIGHT_DEALS_PAGE_URL` mit der vollständigen HTTPS-Adresse setzen.
+
+### 4. Wunschziele & Preisgrenzen anpassen
 In [`config/search_config.yaml`](./config/search_config.yaml) kannst du jederzeit:
 - die globalen „Überallhin“-Preisgrenzen für Memmingen (`max_explore_price_eur: 55.0`) und München (`max_explore_price_eur: 120.0`) anpassen,
 - die Aufenthaltsdauer (`min_stay_days: 3`, `max_stay_days: 14`) ändern,
