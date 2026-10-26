@@ -5,6 +5,9 @@ on:
     # Läuft 2x täglich: um 07:00 UTC (08:00/09:00 DE-Zeit) und 18:00 UTC (19:00/20:00 DE-Zeit)
     - cron: "0 7,18 * * *"
   workflow_dispatch: # Erlaubt jederzeit manuellen Start per Klick in GitHub
+  workflow_run:
+    workflows: ["🚫 Feedback & Blacklist Handler"]
+    types: [completed]
 
 permissions:
   contents: write
@@ -12,6 +15,7 @@ permissions:
 
 jobs:
   search-bargains:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -42,13 +46,13 @@ jobs:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: python -m src.run_search
 
-      - name: Aktualisierte Preishistorie speichern (Commit & Push)
+      - name: Aktive Deals und Preishistorie speichern (Commit & Push)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/price_history.json
+          git add data/price_history.json data/active_deals.json
           if ! git diff --cached --quiet; then
-            git commit -m "chore(data): update flight price history [skip ci]"
+            git commit -m "chore(data): update active flight deals [skip ci]"
             git push
           fi
 

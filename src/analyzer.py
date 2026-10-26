@@ -13,21 +13,18 @@ from src.models import EvaluatedDeal, FlightOffer
 logger = logging.getLogger(__name__)
 
 
-def build_exclude_issue_url(repo: str, destination_code: str, destination_name: str, country: str = "") -> str:
+def build_deal_exclusion_issue_url(repo: str, deal_signature: str, destination_name: str) -> str:
     """
-    Erzeugt einen 1-Klick-GitHub-Issue-Link.
-    Klickt der Nutzer in Discord/Mail/GitHub darauf und bestätigt mit 'Submit new issue',
-    wird der Ort durch den Workflow `feedback_handler.yml` automatisch in `blacklist.json` eingetragen.
+    Erzeugt einen 1-Klick-Link zum Ausschluss genau dieser Route und Reisedaten.
     """
     if not repo:
         repo = os.getenv("GITHUB_REPOSITORY", "DEIN-USER/flight-deal-tracker")
-    title = f"exclude:{destination_code.upper()}"
+    title = f"ignore-deal:{deal_signature}"
     body = (
-        f"Bitte dieses Reiseziel künftig von der Flugpreis-Suche ausschließen:\n\n"
-        f"- **IATA-Code:** `{destination_code.upper()}`\n"
-        f"- **Stadt:** {destination_name}\n"
-        f"- **Land:** {country}\n\n"
-        f"*(Einfach auf 'Submit new issue' klicken – die GitHub Action trägt den Ort automatisch in `config/blacklist.json` ein und schließt dieses Ticket.)*"
+        f"Bitte nur diesen Flugdeal ausblenden:\n\n"
+        f"- **Reise:** {destination_name}\n"
+        f"- **Deal-ID:** `{deal_signature}`\n\n"
+        f"*(Einfach auf 'Submit new issue' klicken – die Route bleibt ansonsten in der Suche.)*"
     )
     return (
         f"https://github.com/{repo}/issues/new"
@@ -96,7 +93,12 @@ class DealAnalyzer:
             return True
         return False
 
-    def evaluate_offers(self, offers: List[FlightOffer]) -> List[EvaluatedDeal]:
+    def evaluate_offers(
+        self,
+        offers: List[FlightOffer],
+        include_on_cooldown: bool = False,
+        apply_limits: bool = True,
+    ) -> List[EvaluatedDeal]:
         window = self.config.get("search_window", {})
         min_stay = int(window.get("min_stay_days", 3))
         max_stay = int(window.get("max_stay_days", 14))
@@ -159,7 +161,7 @@ class DealAnalyzer:
             if not is_true_bargain:
                 continue
 
-            if self._is_on_cooldown(offer, cooldown_days):
+            if not include_on_cooldown and self._is_on_cooldown(offer, cooldown_days):
                 logger.debug("Deal %s übersprungen (bereits innerhalb der letzten %d Tage gemeldet).", offer.deal_signature, cooldown_days)
                 continue
 
@@ -169,11 +171,10 @@ class DealAnalyzer:
             direct_bonus = 5.0 if offer.stops == 0 else 0.0
             deal_score = round(base_score + wishlist_bonus + direct_bonus, 2)
 
-            exclude_url = build_exclude_issue_url(
+            exclude_url = build_deal_exclusion_issue_url(
                 repo=self.repo_slug,
-                destination_code=offer.destination,
+                deal_signature=offer.deal_signature,
                 destination_name=offer.destination_name,
-                country=offer.destination_country,
             )
 
             deals.append(
@@ -192,7 +193,21 @@ class DealAnalyzer:
         # Sortiere nach bestem Deal-Score (und bei Gleichstand nach niedrigstem Preis)
         deals.sort(key=lambda d: (-d.deal_score, d.offer.price_eur))
 
-        # Behalte pro Zielort (Origin -> Destination) max. die 2 besten Termine, damit die Liste abwechslungsreich bleibt
+        if not apply_limits:
+            return deals
+
+        return self._limit_deals(deals)
+
+    def select_notification_deals(self, deals: List[EvaluatedDeal]) -> List[EvaluatedDeal]:
+        cooldown_days = int(self.config.get("deal_scoring", {}).get("notification_cooldown_days", 7))
+        eligible = [
+            deal for deal in deals
+            if not self._is_on_cooldown(deal.offer, cooldown_days)
+        ]
+        return self._limit_deals(eligible)
+
+    def _limit_deals(self, deals: List[EvaluatedDeal]) -> List[EvaluatedDeal]:
+        max_deals = int(self.config.get("deal_scoring", {}).get("max_deals_per_run", 10))
         diversified: List[EvaluatedDeal] = []
         per_route_count: Dict[str, int] = {}
         for d in deals:

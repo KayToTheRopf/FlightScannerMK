@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class EmailSmtpNotifier:
     """
     Sendet eine formatierte HTML-E-Mail mit allen Schnäppchen und 1-Klick-Buttons
-    zum Buchen sowie zum Ausschließen unerwünschter Orte (`[🚫 Ort ausschließen]`).
+    zum Buchen sowie zum Ausschließen einzelner Deals (`[🚫 Diesen Deal ausschließen]`).
     """
 
     def __init__(self) -> None:
@@ -69,7 +69,7 @@ class EmailSmtpNotifier:
                 f"<td style='padding:8px;border-bottom:1px solid #ddd;'>{d.reason}</td>"
                 f"<td style='padding:8px;border-bottom:1px solid #ddd;'>"
                 f"<a href='{o.booking_url}' style='background:#0066cc;color:#fff;padding:5px 10px;text-decoration:none;border-radius:4px;'>✈️ Zum Flug</a> "
-                f"<a href='{d.exclude_url}' style='background:#cc3300;color:#fff;padding:5px 10px;text-decoration:none;border-radius:4px;'>🚫 Ort ausschließen</a>"
+                f"<a href='{d.exclude_url}' style='background:#cc3300;color:#fff;padding:5px 10px;text-decoration:none;border-radius:4px;'>🚫 Deal ausschließen</a>"
                 f"</td>"
                 f"</tr>"
             )
@@ -85,7 +85,7 @@ class EmailSmtpNotifier:
             "</tr></thead>"
             f"<tbody>{rows_html}</tbody></table>"
             "<p style='color:#666;font-size:12px;margin-top:16px;'>"
-            "Tipp: Ein Klick auf '🚫 Ort ausschließen' öffnet ein vorausgefülltes GitHub-Issue, "
-            "das den Zielort automatisch auf deine Blacklist setzt."
+            "Tipp: Ein Klick auf '🚫 Deal ausschließen' öffnet ein vorausgefülltes GitHub-Issue, "
+            "das nur diese Route mit diesem Reisezeitraum ausblendet."
             "</p></body></html>"
         )

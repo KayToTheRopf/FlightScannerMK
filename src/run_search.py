@@ -4,11 +4,20 @@ import argparse
 import logging
 import os
 import sys
+from datetime import date
 from pathlib import Path
 from typing import List
 
 import yaml
 
+from src.active_deals import (
+    DEFAULT_ACTIVE_DEALS_PATH,
+    DEFAULT_DEAL_EXCLUSIONS_PATH,
+    load_active_deals,
+    load_deal_exclusions,
+    merge_active_deals,
+    save_active_deals,
+)
 from src.analyzer import DealAnalyzer
 from src.deal_page import get_deals_page_url, write_deals_page
 from src.models import EvaluatedDeal, FlightOffer
@@ -117,6 +126,9 @@ def main(argv: List[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG_PATH, help="Pfad zur search_config.yaml")
     parser.add_argument("--blacklist", type=Path, default=DEFAULT_BLACKLIST_PATH, help="Pfad zur blacklist.json")
     parser.add_argument("--history", type=Path, default=DEFAULT_HISTORY_PATH, help="Pfad zur price_history.json")
+    parser.add_argument("--active-deals", type=Path, default=DEFAULT_ACTIVE_DEALS_PATH, help="Pfad zu aktiven Deals")
+    parser.add_argument("--deal-exclusions", type=Path, default=DEFAULT_DEAL_EXCLUSIONS_PATH, help="Pfad zu Deal-Ausschlüssen")
+    parser.add_argument("--deals-page", type=Path, default=DEFAULT_DEALS_PAGE_PATH, help="Pfad zur HTML-Deal-Seite")
     parser.add_argument("--dry-run", action="store_true", help="Führt Suche & Bewertung aus, sendet aber keine Nachrichten")
     parser.add_argument("--verbose", action="store_true", help="Detailliertes Debug-Logging aktivieren")
     args = parser.parse_args(argv)
@@ -136,15 +148,26 @@ def main(argv: List[str] | None = None) -> int:
     offers = collect_all_offers(config)
     logging.info("Insgesamt %d Flugangebote über alle aktiven Provider gesammelt.", len(offers))
 
-    deals = analyzer.evaluate_offers(offers)
+    deals = analyzer.evaluate_offers(offers, include_on_cooldown=True, apply_limits=False)
     logging.info("%d Angebote als echte Schnäppchen eingestuft.", len(deals))
 
-    if not args.dry_run:
-        write_deals_page(deals, DEFAULT_DEALS_PAGE_PATH)
+    notification_deals = analyzer.select_notification_deals(deals)
+    logging.info("%d neue Schnäppchen für Benachrichtigungen ausgewählt.", len(notification_deals))
 
-    sent_channels = dispatch_notifications(config, deals, dry_run=args.dry_run)
-    if deals and sent_channels > 0:
-        analyzer.mark_deals_notified(deals)
+    if not args.dry_run:
+        active_deals = merge_active_deals(
+            existing=load_active_deals(args.active_deals),
+            current=deals,
+            excluded_signatures=load_deal_exclusions(args.deal_exclusions),
+            today=date.today(),
+        )
+        save_active_deals(active_deals, args.active_deals)
+        write_deals_page(active_deals, args.deals_page)
+        logging.info("%d aktive Deals auf der Deal-Seite gespeichert.", len(active_deals))
+
+    sent_channels = dispatch_notifications(config, notification_deals, dry_run=args.dry_run)
+    if notification_deals and sent_channels > 0:
+        analyzer.mark_deals_notified(notification_deals)
 
     analyzer.save_history()
     return 0

@@ -12,6 +12,12 @@ from typing import List, Optional, Tuple
 import requests
 import yaml
 
+from src.active_deals import (
+    DEFAULT_DEAL_EXCLUSIONS_PATH,
+    DEAL_SIGNATURE_PATTERN,
+    load_deal_exclusions,
+    save_deal_exclusions,
+)
 from src.providers.base import resolve_city_and_country
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -89,6 +95,23 @@ def add_exclusion(
         cities.append(raw)
         save_blacklist(bl, blacklist_path)
         return True, f"Ort **{raw}** wurde dauerhaft auf die Blacklist gesetzt."
+
+
+def add_deal_exclusion(
+        signature: str,
+        exclusions_path: Path = DEFAULT_DEAL_EXCLUSIONS_PATH,
+) -> Tuple[bool, str]:
+        deal_signature = (signature or "").strip()
+        if not DEAL_SIGNATURE_PATTERN.fullmatch(deal_signature):
+            return False, "Ungültige Deal-ID. Erwartet wird `AAA-BBB:YYYY-MM-DD:YYYY-MM-DD`."
+
+        exclusions = load_deal_exclusions(exclusions_path)
+        if deal_signature in exclusions:
+            return False, f"Deal **{deal_signature}** war bereits ausgeschlossen."
+
+        exclusions.add(deal_signature)
+        save_deal_exclusions(exclusions, exclusions_path)
+        return True, f"Nur der Deal **{deal_signature}** wurde dauerhaft ausgeschlossen."
     return False, f"Ort **{raw}** stand bereits auf der Blacklist."
 
 
@@ -135,10 +158,12 @@ def parse_and_execute_feedback(
     text: str,
     blacklist_path: Path = DEFAULT_BLACKLIST_PATH,
     config_path: Path = DEFAULT_CONFIG_PATH,
+    deal_exclusions_path: Path = DEFAULT_DEAL_EXCLUSIONS_PATH,
 ) -> List[str]:
     """
     Parst Issue-Titel oder Issue-Kommentare nach Feedback-Befehlen:
-      - `exclude:TIA` (aus 1-Klick-Link im Issue-Titel)
+      - `ignore-deal:<SIGNATUR>` (aus 1-Klick-Link im Deal)
+      - `exclude:TIA` (aus einem älteren 1-Klick-Link)
       - `/exclude TIA` oder `!exclude city:Tirana` oder `/ignore STN`
       - `/watch LIS 110` oder `/watch PMI 65 Name=Mallorca`
     """
@@ -151,21 +176,35 @@ def parse_and_execute_feedback(
         if not line_clean:
             continue
 
-        # 1) 1-Klick-Issue-Titel: "exclude:TIA"
+        # 1) 1-Klick-Issue-Titel: "ignore-deal:FMM-PMI:2026-06-10:2026-06-17"
+        m_deal_title = re.match(r"^ignore-deal\s*:\s*(.+)$", line_clean, flags=re.IGNORECASE)
+        if m_deal_title:
+            _, msg = add_deal_exclusion(m_deal_title.group(1).strip(), exclusions_path=deal_exclusions_path)
+            messages.append(msg)
+            continue
+
+        # 2) Deal per Kommentar ausschließen
+        m_deal_cmd = re.match(r"^[/!](?:ignore-deal|exclude-deal)\s+(.+)$", line_clean, flags=re.IGNORECASE)
+        if m_deal_cmd:
+            _, msg = add_deal_exclusion(m_deal_cmd.group(1).strip(), exclusions_path=deal_exclusions_path)
+            messages.append(msg)
+            continue
+
+        # 3) Älterer 1-Klick-Issue-Titel: "exclude:TIA"
         m_title = re.match(r"^exclude\s*:\s*(.+)$", line_clean, flags=re.IGNORECASE)
         if m_title:
             _, msg = add_exclusion(m_title.group(1).strip(), blacklist_path=blacklist_path)
             messages.append(msg)
             continue
 
-        # 2) Kommentar-Befehl: "/exclude <ziel>" oder "!exclude <ziel>" oder "/ignore <ziel>"
+        # 4) Kommentar-Befehl: "/exclude <ziel>" oder "!exclude <ziel>" oder "/ignore <ziel>"
         m_cmd = re.match(r"^[/!](?:exclude|ignore|blacklist)\s+(.+)$", line_clean, flags=re.IGNORECASE)
         if m_cmd:
             _, msg = add_exclusion(m_cmd.group(1).strip(), blacklist_path=blacklist_path)
             messages.append(msg)
             continue
 
-        # 3) Kommentar-Befehl: "/watch <IATA> <PREIS> [Name=...]"
+        # 5) Kommentar-Befehl: "/watch <IATA> <PREIS> [Name=...]"
         m_watch = re.match(
             r"^[/!](?:watch|add|maxprice)\s+([A-Za-z]{3})\s+(\d+(?:[.,]\d+)?)(?:\s+Name=(.+))?$",
             line_clean,
@@ -213,11 +252,12 @@ def notify_feedback_result(messages: List[str], issue_number: Optional[int] = No
 
 
 def main(argv: List[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Verarbeitet Rückmeldungen (Blacklist & Wunschliste)")
-    parser.add_argument("--input", type=str, default="", help="Befehlstext oder Issue-Titel (z.B. 'exclude:TIA' oder '/exclude TIA')")
+    parser = argparse.ArgumentParser(description="Verarbeitet Rückmeldungen (Blacklist, Deal-Ausschlüsse & Wunschliste)")
+    parser.add_argument("--input", type=str, default="", help="Befehlstext oder Issue-Titel (z.B. 'ignore-deal:...' oder '/exclude TIA')")
     parser.add_argument("--issue-number", type=int, default=None, help="Optionale GitHub Issue-Nummer für Antwort/Schließen")
     parser.add_argument("--blacklist", type=Path, default=DEFAULT_BLACKLIST_PATH)
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG_PATH)
+    parser.add_argument("--deal-exclusions", type=Path, default=DEFAULT_DEAL_EXCLUSIONS_PATH)
     args = parser.parse_args(argv)
 
     input_text = args.input or os.getenv("FEEDBACK_TEXT", "")
@@ -227,6 +267,7 @@ def main(argv: List[str] | None = None) -> int:
         text=input_text,
         blacklist_path=args.blacklist,
         config_path=args.config,
+        deal_exclusions_path=args.deal_exclusions,
     )
     if not messages:
         print("Keine passenden Feedback-Befehle im Text gefunden.")

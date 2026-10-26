@@ -77,14 +77,14 @@ def render_deals_page(deals: List[EvaluatedDeal], generated_at: datetime | None 
               </dl>
               <div class="actions">
                 {_button("✈ Flug ansehen & buchen", offer.booking_url, "button-book")}
-                {_button("🚫 Ort ausschließen", deal.exclude_url, "button-exclude")}
+                {_button("🚫 Diesen Deal ausschließen", deal.exclude_url, "button-exclude")}
               </div>
             </article>
             """
         )
 
     content = "\n".join(cards) if cards else (
-        '<p class="empty">Bei der letzten Suche wurden keine neuen Schnäppchen gefunden.</p>'
+        '<p class="empty">Aktuell sind keine aktiven Schnäppchen gespeichert.</p>'
     )
     best_price = min((deal.offer.price_eur for deal in deals), default=None)
     summary = f"{len(deals)} Schnäppchen gefunden"

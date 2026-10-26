@@ -91,7 +91,7 @@ class GitHubIssueNotifier:
             route_str = f"**{o.origin}** ➔ **{o.destination_name}** (`{o.destination}`, {o.destination_country})"
             dates_str = f"`{o.outbound_date}` – `{o.inbound_date}`"
             price_str = f"**{o.price_eur:.2f} €**"
-            actions = f"[✈️ Buchen]({o.booking_url}) · [🚫 Ort ausschließen]({d.exclude_url})"
+            actions = f"[✈️ Buchen]({o.booking_url}) · [🚫 Deal ausschließen]({d.exclude_url})"
             lines.append(
                 f"| {badge} | {route_str} | {dates_str} | {o.stay_days} Tage | {price_str} | {d.reason} | {o.airline} ({stops}) | {actions} |"
             )
@@ -101,12 +101,13 @@ class GitHubIssueNotifier:
                 "",
                 "---",
                 "### 💬 Interaktive Steuerung (Rückmeldung geben)",
-                "Du kannst Orte ganz einfach ausschließen oder deine Wunschliste anpassen:",
-                "1. **Per 1-Klick:** Klicke in der Tabelle oben bei einem Ziel auf **`[🚫 Ort ausschließen]`** und bestätige das Ticket.",
+                "Du kannst einen einzelnen Deal ausschließen oder deine Wunschliste anpassen:",
+                "1. **Per 1-Klick:** Klicke in der Tabelle beim Deal auf **`[🚫 Deal ausschließen]`** und bestätige das Ticket.",
                 "2. **Per Kommentar unter diesem Issue (oder per E-Mail-Antwort):**",
                 "   - `/exclude TIA` *(schließt den Flughafen-Code TIA dauerhaft aus)*",
                 "   - `/exclude city:Tirana` *(schließt die Stadt Tirana aus)*",
                 "   - `/exclude country:Albanien` *(schließt ein ganzes Land aus)*",
+                "   - `/ignore-deal FMM-PMI:2026-06-10:2026-06-17` *(schließt nur diesen Deal aus)*",
                 "   - `/watch LIS 110 Name=Lissabon` *(fügt ein neues Wunschziel mit Maximalpreis hinzu)*",
             ]
         )

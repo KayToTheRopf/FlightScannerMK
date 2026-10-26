@@ -12,15 +12,19 @@ permissions:
 
 jobs:
   process-feedback:
-    # Nur ausführen, wenn der Repository-Eigentümer selbst ein Exclude-Issue öffnet oder kommentiert
+    # Nur Feedback des Repository-Eigentümers verarbeiten.
     if: >
       github.actor == github.repository_owner &&
       (
-        (github.event_name == 'issues' && startsWith(github.event.issue.title, 'exclude:')) ||
+        (github.event_name == 'issues' && (
+          startsWith(github.event.issue.title, 'ignore-deal:') ||
+          startsWith(github.event.issue.title, 'exclude:')
+        )) ||
         (github.event_name == 'issue_comment' && (
           contains(github.event.comment.body, '/exclude') ||
           contains(github.event.comment.body, '!exclude') ||
           contains(github.event.comment.body, '/ignore') ||
+          contains(github.event.comment.body, '/exclude-deal') ||
           contains(github.event.comment.body, '/watch')
         ))
       )
@@ -40,7 +44,7 @@ jobs:
       - name: Abhängigkeiten installieren
         run: pip install -r requirements.txt
 
-      - name: Blacklist / Wunschliste aktualisieren
+      - name: Feedback verarbeiten
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -50,11 +54,11 @@ jobs:
           FEEDBACK_TEXT: ${{ github.event_name == 'issues' && github.event.issue.title || github.event.comment.body }}
         run: python -m src.handle_feedback
 
-      - name: Aktualisierte Blacklist / Config committen
+      - name: Aktualisierte Feedback-Daten committen
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add config/blacklist.json config/search_config.yaml
+          git add config/blacklist.json config/search_config.yaml data/deal_exclusions.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(config): update blacklist/wishlist via user feedback"
             git push
