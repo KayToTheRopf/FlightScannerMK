@@ -95,24 +95,24 @@ def add_exclusion(
         cities.append(raw)
         save_blacklist(bl, blacklist_path)
         return True, f"Ort **{raw}** wurde dauerhaft auf die Blacklist gesetzt."
+    return False, f"Ort **{raw}** stand bereits auf der Blacklist."
 
 
 def add_deal_exclusion(
-        signature: str,
-        exclusions_path: Path = DEFAULT_DEAL_EXCLUSIONS_PATH,
+    signature: str,
+    exclusions_path: Path = DEFAULT_DEAL_EXCLUSIONS_PATH,
 ) -> Tuple[bool, str]:
-        deal_signature = (signature or "").strip()
-        if not DEAL_SIGNATURE_PATTERN.fullmatch(deal_signature):
-            return False, "Ungültige Deal-ID. Erwartet wird `AAA-BBB:YYYY-MM-DD:YYYY-MM-DD`."
+    deal_signature = (signature or "").strip()
+    if not DEAL_SIGNATURE_PATTERN.fullmatch(deal_signature):
+        return False, "Ungültige Deal-ID. Erwartet wird `AAA-BBB:YYYY-MM-DD:YYYY-MM-DD`."
 
-        exclusions = load_deal_exclusions(exclusions_path)
-        if deal_signature in exclusions:
-            return False, f"Deal **{deal_signature}** war bereits ausgeschlossen."
+    exclusions = load_deal_exclusions(exclusions_path)
+    if deal_signature in exclusions:
+        return False, f"Deal **{deal_signature}** war bereits ausgeschlossen."
 
-        exclusions.add(deal_signature)
-        save_deal_exclusions(exclusions, exclusions_path)
-        return True, f"Nur der Deal **{deal_signature}** wurde dauerhaft ausgeschlossen."
-    return False, f"Ort **{raw}** stand bereits auf der Blacklist."
+    exclusions.add(deal_signature)
+    save_deal_exclusions(exclusions, exclusions_path)
+    return True, f"Nur der Deal **{deal_signature}** wurde dauerhaft ausgeschlossen."
 
 
 def add_or_update_wishlist(
