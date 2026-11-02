@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import List, Optional
 from urllib.parse import urlsplit
 
-import requests
+from src.compat import requests_mod as requests
 
 from src.models import EvaluatedDeal
 

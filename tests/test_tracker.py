@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
-import yaml
+from src.compat import yaml_mod as yaml
 
 from src.analyzer import DealAnalyzer, build_exclude_issue_url
 from src.handle_feedback import parse_and_execute_feedback

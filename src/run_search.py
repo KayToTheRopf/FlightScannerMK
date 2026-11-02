@@ -8,7 +8,7 @@ from datetime import date
 from pathlib import Path
 from typing import List
 
-import yaml
+from src.compat import yaml_mod as yaml
 
 from src.active_deals import (
     DEFAULT_ACTIVE_DEALS_PATH,

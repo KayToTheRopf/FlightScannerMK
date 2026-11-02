@@ -32,6 +32,17 @@ def build_deal_exclusion_issue_url(repo: str, deal_signature: str, destination_n
     )
 
 
+def build_exclude_issue_url(repo: str, dest_code: str, dest_name: str, dest_country: str = "") -> str:
+    if not repo:
+        repo = os.getenv("GITHUB_REPOSITORY", "DEIN-USER/flight-deal-tracker")
+    title = f"exclude:{dest_code.upper()}"
+    body = f"Bitte Ort {dest_name} ({dest_code.upper()}, {dest_country}) dauerhaft ausschließen."
+    return (
+        f"https://github.com/{repo}/issues/new"
+        f"?title={quote(title)}&labels={quote('feedback-exclude')}&body={quote(body)}"
+    )
+
+
 class DealAnalyzer:
     """
     Prüft gefundene Flugangebote gegen:

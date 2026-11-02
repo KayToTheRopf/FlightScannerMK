@@ -4,7 +4,7 @@ import logging
 from datetime import date, timedelta
 from typing import List
 
-import requests
+from src.compat import requests_mod as requests
 
 from src.models import FlightOffer
 from src.providers.base import FlightProvider, build_google_flights_url, date_window, resolve_city_and_country

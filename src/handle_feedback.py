@@ -9,8 +9,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-import requests
-import yaml
+from src.compat import requests_mod as requests, yaml_mod as yaml
 
 from src.active_deals import (
     DEFAULT_DEAL_EXCLUSIONS_PATH,
@@ -177,7 +176,7 @@ def parse_and_execute_feedback(
             continue
 
         # 1) 1-Klick-Issue-Titel: "ignore-deal:FMM-PMI:2026-06-10:2026-06-17"
-        m_deal_title = re.match(r"^ignore-deal\s*:\s*(.+)$", line_clean, flags=re.IGNORECASE)
+        m_deal_title = re.match(r"^(?:ignore-deal|exclude-deal)\s*:\s*(.+)$", line_clean, flags=re.IGNORECASE)
         if m_deal_title:
             _, msg = add_deal_exclusion(m_deal_title.group(1).strip(), exclusions_path=deal_exclusions_path)
             messages.append(msg)
@@ -190,15 +189,15 @@ def parse_and_execute_feedback(
             messages.append(msg)
             continue
 
-        # 3) Älterer 1-Klick-Issue-Titel: "exclude:TIA"
-        m_title = re.match(r"^exclude\s*:\s*(.+)$", line_clean, flags=re.IGNORECASE)
+        # 3) 1-Klick- oder manuelle Issue-Titel: "exclude:TIA", "ignore: Banja luka", "blacklist: BNX"
+        m_title = re.match(r"^(?:exclude|ignore|blacklist\w*)\s*:\s*(.+)$", line_clean, flags=re.IGNORECASE)
         if m_title:
             _, msg = add_exclusion(m_title.group(1).strip(), blacklist_path=blacklist_path)
             messages.append(msg)
             continue
 
         # 4) Kommentar-Befehl: "/exclude <ziel>" oder "!exclude <ziel>" oder "/ignore <ziel>"
-        m_cmd = re.match(r"^[/!](?:exclude|ignore|blacklist)\s+(.+)$", line_clean, flags=re.IGNORECASE)
+        m_cmd = re.match(r"^[/!](?:exclude|ignore|blacklist\w*)\s+(.+)$", line_clean, flags=re.IGNORECASE)
         if m_cmd:
             _, msg = add_exclusion(m_cmd.group(1).strip(), blacklist_path=blacklist_path)
             messages.append(msg)

@@ -1,0 +1,1571 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Automatische, blockfreie Schnäppchen-Suche für Tech & Hardware, Games, LEGO/Collectibles und geprüfte Refurb-Deals via MyDealz RSS, Steam/CheapShark API und eBay Official API.">
+  <meta property="og:title" content="Multi-Market Deal & Flip Radar">
+  <meta property="og:description" content="Automatische, blockfreie Schnäppchen-Suche für Tech & Hardware, Games, LEGO/Collectibles und geprüfte Refurb-Deals via MyDealz RSS, Steam/CheapShark API und eBay Official API.">
+  <meta property="og:type" content="website">
+  <title>Multi-Market Deal & Flip Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg-canvas: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-header: #0f172a;
+      --border-subtle: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --accent-primary: #1d4ed8;
+      --accent-primary-hover: #1e40af;
+      --accent-savings: #16a34a;
+      --accent-danger: #dc2626;
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-canvas);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg-canvas); color: var(--text-primary); line-height: 1.5; }
+    h1, h2, h3 { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; margin: 0; text-wrap: balance; }
+    .mono, .price, .price-sub, .kpi-value {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Top Bar Contract: 3 Zones */
+    .topbar {
+      background: var(--bg-header);
+      color: #ffffff;
+      border-bottom: 1px solid #1e293b;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .topbar-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .brand-wordmark {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: -0.01em;
+    }
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      overflow-x: auto;
+    }
+    .topbar-nav a {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: color 150ms ease;
+    }
+    .topbar-nav a:hover { color: #ffffff; text-decoration: underline; text-underline-offset: 4px; }
+    .topbar-action { flex-shrink: 0; }
+    .btn-scan {
+      background: var(--accent-primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 7px;
+      padding: 0.5rem 1rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 150ms ease;
+    }
+    .btn-scan:hover { background: var(--accent-primary-hover); }
+    .btn-scan:disabled { opacity: 0.6; cursor: wait; }
+
+    /* Hero & KPI Strip */
+    .hero-banner {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 2rem 1.5rem 1.75rem;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .hero-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-header h1 {
+      font-size: clamp(1.65rem, 2.5vw, 2.25rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+    .hero-sub {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      max-width: 72ch;
+    }
+    .hero-meta {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-align: right;
+    }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .kpi-cell {
+      padding: 0.25rem 0;
+    }
+    .kpi-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .kpi-value {
+      font-size: 1.45rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .kpi-value.savings { color: var(--accent-savings); }
+
+    /* Main Workspace */
+    main {
+      max-width: 1280px;
+      margin: 1.75rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Filter Toolbar */
+    .filter-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .segmented-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 8px;
+    }
+    .seg-btn {
+      background: transparent;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 120ms ease, color 120ms ease;
+    }
+    .seg-btn:hover { color: var(--text-primary); }
+    .seg-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+    .search-sort-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      flex: 1;
+      justify-content: flex-end;
+      min-width: 260px;
+    }
+    .input-search, .select-sort, .form-input {
+      padding: 0.48rem 0.75rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+    .input-search { min-width: 240px; flex: 1; max-width: 360px; }
+
+    /* Deal Feed */
+    .deal-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .deal-card {
+      padding: 1.25rem 1.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      transition: border-color 150ms ease;
+    }
+    .deal-card:hover { border-color: #cbd5e1; }
+    .deal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .deal-meta-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .meta-mode { font-weight: 600; color: var(--text-secondary); }
+    .meta-wishlist { color: var(--accent-primary); }
+    .deal-price-block { text-align: right; }
+    .price {
+      display: block;
+      color: var(--accent-savings);
+      font-size: 1.45rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .price-sub {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+    .deal-title {
+      margin: 0.45rem 0 0.85rem;
+      font-size: 1.15rem;
+      line-height: 1.35;
+    }
+    .deal-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      padding: 0.75rem 0;
+      margin-bottom: 0.85rem;
+      border-top: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .metric-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
+    .metric-value {
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .metric-savings { color: var(--accent-savings); font-weight: 600; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.48rem 0.9rem;
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 150ms ease;
+    }
+    .button-book { background: var(--accent-primary); color: #ffffff; }
+    .button-book:hover { background: var(--accent-primary-hover); }
+    .button-exclude { background: #fef2f2; color: var(--accent-danger); border-color: #fecaca; }
+    .button-exclude:hover { background: #fee2e2; }
+    .button-secondary { background: #f8fafc; color: var(--text-secondary); border-color: var(--border-subtle); }
+    .button-secondary:hover { color: var(--text-primary); background: #f1f5f9; }
+    .button-disabled { background: #94a3b8; color: #ffffff; cursor: not-allowed; }
+
+    /* Management Sections */
+    .section-block {
+      margin-top: 2.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .section-header h2 { font-size: 1.2rem; }
+    .section-header p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      margin-bottom: 1.25rem;
+    }
+    .data-table th, .data-table td {
+      padding: 0.65rem 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+      text-align: left;
+    }
+    .data-table th {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #f8fafc;
+    }
+    .text-right { text-align: right !important; }
+    .muted { color: var(--text-muted); }
+
+    .inline-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      padding-top: 0.5rem;
+    }
+    .btn-inline-danger {
+      background: transparent;
+      border: 1px solid #fecaca;
+      color: var(--accent-danger);
+      border-radius: 5px;
+      padding: 0.25rem 0.55rem;
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+    .btn-inline-danger:hover { background: #fef2f2; }
+
+    .trap-list {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+    .filter-token {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .token-remove {
+      border: none;
+      background: transparent;
+      color: var(--accent-danger);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0 0.2rem;
+    }
+
+    .sources-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    .source-col h3 { font-size: 0.98rem; margin-bottom: 0.35rem; }
+    .source-col p { margin: 0; font-size: 0.84rem; color: var(--text-secondary); }
+
+    .empty {
+      padding: 2.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 0.75rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+      z-index: 50;
+    }
+    #toast.visible { opacity: 1; transform: translateY(0); }
+
+    footer {
+      max-width: 1280px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    @media (max-width: 860px) {
+      .kpi-strip, .deal-metrics-grid, .sources-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .kpi-strip, .deal-metrics-grid, .sources-grid { grid-template-columns: 1fr; }
+      .hero-meta { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#" class="brand-wordmark">DealRadar · Multi-Market</a>
+      <nav class="topbar-nav" aria-label="Hauptnavigation">
+        <a href="#deals">Angebote</a>
+        <a href="#wishlist">Wunschliste</a>
+        <a href="#blacklist">Trap-Filter & Blacklist</a>
+        <a href="#architecture">Quellen & Trust</a>
+      </nav>
+      <div class="topbar-action">
+        <button type="button" id="btn-live-scan" class="btn-scan">Live-Scan starten</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero-banner">
+    <div class="container">
+      <div class="hero-header">
+        <div>
+          <h1>Multi-Market Deal & Flip Radar</h1>
+          <p class="hero-sub">
+            100 % blockfreie Schnäppchen-Erkennung über offizielle RSS-Feeds und REST-APIs (MyDealz Community-PVG, Steam/CheapShark & eBay Official API) mit gleitender Preishistorie.
+          </p>
+        </div>
+        <div class="hero-meta">
+          <div>12 Schnäppchen gefunden · günstigster Deal ab 26.99 €</div>
+          <div>Letzte Aktualisierung: <span class="mono">28.10.2026 21:08 UTC</span></div>
+        </div>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi-cell">
+          <span class="kpi-label">Aktive Schnäppchen (Gefiltert)</span>
+          <span class="kpi-value" id="kpi-deal-count">12</span>
+        </div>
+        <div class="kpi-cell">
+          <span class="kpi-label">Ø Ersparnis ggü. PVG / Historie</span>
+          <span class="kpi-value savings" id="kpi-avg-discount">-30.3% (bis -150 €)</span>
+        </div>
+        <div class="kpi-cell">
+          <span class="kpi-label">Überwachte Wunsch-Items</span>
+          <span class="kpi-value" id="kpi-wishlist-count">0</span>
+        </div>
+        <div class="kpi-cell">
+          <span class="kpi-label">Aktive Trap- & Blacklist-Filter</span>
+          <span class="kpi-value" id="kpi-trap-count">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section id="deals" aria-label="Filter und Deal-Übersicht">
+      <div class="filter-panel">
+        <div class="filter-row">
+          <div class="segmented-group" role="group" aria-label="Markt-Kategorie">
+            <button type="button" class="seg-btn active" data-filter-cat="all">Alle Märkte</button>
+            <button type="button" class="seg-btn" data-filter-cat="tech">Tech & Hardware</button>
+            <button type="button" class="seg-btn" data-filter-cat="games">Games & Software</button>
+            <button type="button" class="seg-btn" data-filter-cat="collectibles">LEGO & Collectibles</button>
+            <button type="button" class="seg-btn" data-filter-cat="flips">Refurb & eBay</button>
+          </div>
+
+          <div class="segmented-group" role="group" aria-label="Entdeckungs-Modus">
+            <button type="button" class="seg-btn active" data-filter-mode="all">Alle Modi</button>
+            <button type="button" class="seg-btn" data-filter-mode="wishlist">Nur Wunschliste</button>
+            <button type="button" class="seg-btn" data-filter-mode="explore">Explore-Deals</button>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div class="segmented-group" role="group" aria-label="Daten-Quelle">
+            <button type="button" class="seg-btn active" data-filter-provider="all">Alle Quellen</button>
+            <button type="button" class="seg-btn" data-filter-provider="mydealz">MyDealz RSS</button>
+            <button type="button" class="seg-btn" data-filter-provider="steam_cheapshark">Steam & CheapShark</button>
+            <button type="button" class="seg-btn" data-filter-provider="ebay_official">eBay Official API</button>
+          </div>
+
+          <div class="search-sort-group">
+            <input type="search" id="deal-search" class="input-search" placeholder="Suche nach RTX, LEGO 10316, Spiel, Händler...">
+            <select id="deal-sort" class="select-sort" aria-label="Sortierung">
+              <option value="score">Sortierung: Deal-Score</option>
+              <option value="savings">Höchste Ersparnis (€)</option>
+              <option value="discount">Höchster Rabatt (%)</option>
+              <option value="price-asc">Niedrigster Preis</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="deal-list" id="deal-list-container">
+        
+            <article class="deal-card"
+                     data-signature="GAMES:GAMES-CYBERPUNK-2077-ULTIMATE:2999"
+                     data-category="games"
+                     data-provider="steam_cheapshark"
+                     data-wishlist="true"
+                     data-price="29.99"
+                     data-score="67.40"
+                     data-savings="30.00"
+                     data-discount="50.00">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Games &amp; Software</span>
+                  <span aria-hidden="true">·</span>
+                  <span>GOG.com</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Digital Key / Direktkauf</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Steam / CheapShark API</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">29.99 €</span>
+                  <span class="price-sub">PVG/Ø 59.99 € · Limit 36 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">Cyberpunk 2077: Ultimate Edition (inkl. Phantom Liberty, DRM-frei)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">50% unter PVG/Ø (60 € · -30 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">94% Steam Reviews · Score 9.6/10 · Offiziell (GOG.com)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">GAMES-CYBERPUNK-2077-ULTIMATE · Score 67.4</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.gog.com/de/game/cyberpunk_2077_ultimate_edition" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3AGAMES%3AGAMES-CYBERPUNK-2077-ULTIMATE%3A2999&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="GAMES:GAMES-CYBERPUNK-2077-ULTIMATE:2999" data-title="Cyberpunk 2077: Ultimate Edition (inkl. Phantom Liberty, DRM-frei)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="GAMES-CYBERPUNK-2077-ULTIMATE"
+                        data-title="Cyberpunk 2077: Ultimate Edition (inkl. Phantom Liberty, DRM-frei)">
+                  Produkt (GAMES-CYBERPUNK-2077-ULTIMATE) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="GAMES:GAMES-ELDEN-RING:2699"
+                     data-category="games"
+                     data-provider="steam_cheapshark"
+                     data-wishlist="false"
+                     data-price="26.99"
+                     data-score="57.30"
+                     data-savings="33.00"
+                     data-discount="55.00">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode ">Explore-Deal</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Games &amp; Software</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Humble Store</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Digital Key / Direktkauf</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Steam / CheapShark API</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">26.99 €</span>
+                  <span class="price-sub">PVG/Ø 59.99 € · Limit 40 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">ELDEN RING (PC Steam Key · Offizieller Bandai Namco Partner)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">55% unter PVG/Ø (60 € · -33 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">93% Steam Reviews · Score 9.4/10 · Offiziell (Humble Store)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">GAMES-ELDEN-RING · Score 57.3</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://store.steampowered.com/app/1245620/ELDEN_RING/" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3AGAMES%3AGAMES-ELDEN-RING%3A2699&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="GAMES:GAMES-ELDEN-RING:2699" data-title="ELDEN RING (PC Steam Key · Offizieller Bandai Namco Partner)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="GAMES-ELDEN-RING"
+                        data-title="ELDEN RING (PC Steam Key · Offizieller Bandai Namco Partner)">
+                  Produkt (GAMES-ELDEN-RING) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="COLLECTIBLES:COLLECTIBLES-SEIKO-SSK003:25900"
+                     data-category="collectibles"
+                     data-provider="mydealz"
+                     data-wishlist="true"
+                     data-price="259.00"
+                     data-score="56.70"
+                     data-savings="120.00"
+                     data-discount="31.70">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>LEGO &amp; Collectibles</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Christ Juweliere</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Neu (Autorisierter Händler)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MyDealz RSS</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">259.00 €</span>
+                  <span class="price-sub">PVG/Ø 379.00 € · Limit 299 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">Seiko 5 Sports Automatik GMT SSK003K1 &#x27;Blueberry&#x27; Edelstahlband (Kaliber 4R34)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">32% unter PVG/Ø (379 € · -120 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">618° MyDealz Community · PVG 379 €</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">COLLECTIBLES-SEIKO-SSK003 · Score 56.7</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.mydealz.de/gruppe/uhren" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3ACOLLECTIBLES%3ACOLLECTIBLES-SEIKO-SSK003%3A25900&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="COLLECTIBLES:COLLECTIBLES-SEIKO-SSK003:25900" data-title="Seiko 5 Sports Automatik GMT SSK003K1 &#x27;Blueberry&#x27; Edelstahlband (Kaliber 4R34)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="COLLECTIBLES-SEIKO-SSK003"
+                        data-title="Seiko 5 Sports Automatik GMT SSK003K1 &#x27;Blueberry&#x27; Edelstahlband (Kaliber 4R34)">
+                  Produkt (COLLECTIBLES-SEIKO-SSK003) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="GAMES:GAMES-BALDURS-GATE-3:3899"
+                     data-category="games"
+                     data-provider="steam_cheapshark"
+                     data-wishlist="true"
+                     data-price="38.99"
+                     data-score="52.40"
+                     data-savings="21.00"
+                     data-discount="35.00">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Games &amp; Software</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Steam Store (DE)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Digital (Steam Direkt)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Steam / CheapShark API</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">38.99 €</span>
+                  <span class="price-sub">PVG/Ø 59.99 € · Limit 44 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">Baldur&#x27;s Gate 3 (PC / Steam Deck Verifiziert)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">35% unter PVG/Ø (60 € · -21 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">96% Steam Reviews · Score 9.8/10 · Offiziell (Steam)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">GAMES-BALDURS-GATE-3 · Score 52.4</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://store.steampowered.com/app/1086940/Baldurs_Gate_3/" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3AGAMES%3AGAMES-BALDURS-GATE-3%3A3899&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="GAMES:GAMES-BALDURS-GATE-3:3899" data-title="Baldur&#x27;s Gate 3 (PC / Steam Deck Verifiziert)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="GAMES-BALDURS-GATE-3"
+                        data-title="Baldur&#x27;s Gate 3 (PC / Steam Deck Verifiziert)">
+                  Produkt (GAMES-BALDURS-GATE-3) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="COLLECTIBLES:LEGO-75192:54900"
+                     data-category="collectibles"
+                     data-provider="mydealz"
+                     data-wishlist="true"
+                     data-price="549.00"
+                     data-score="46.50"
+                     data-savings="150.00"
+                     data-discount="21.50">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>LEGO &amp; Collectibles</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Proshop.de</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Neu (Versiegelt)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MyDealz RSS</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">549.00 €</span>
+                  <span class="price-sub">PVG/Ø 699.00 € · Limit 589 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">LEGO Star Wars 75192 UCS Millennium Falcon (7.541 Teile, Sammler-Edition)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">21% unter PVG/Ø (699 € · -150 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">512° MyDealz Community · PVG 699 €</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">LEGO-75192 · Score 46.5</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.mydealz.de/gruppe/lego" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3ACOLLECTIBLES%3ALEGO-75192%3A54900&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="COLLECTIBLES:LEGO-75192:54900" data-title="LEGO Star Wars 75192 UCS Millennium Falcon (7.541 Teile, Sammler-Edition)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="LEGO-75192"
+                        data-title="LEGO Star Wars 75192 UCS Millennium Falcon (7.541 Teile, Sammler-Edition)">
+                  Produkt (LEGO-75192) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="COLLECTIBLES:LEGO-10316:33490"
+                     data-category="collectibles"
+                     data-provider="mydealz"
+                     data-wishlist="true"
+                     data-price="334.90"
+                     data-score="46.20"
+                     data-savings="90.09"
+                     data-discount="21.20">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>LEGO &amp; Collectibles</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Amazon.de</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Neu (OVP)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MyDealz RSS</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">334.90 €</span>
+                  <span class="price-sub">PVG/Ø 424.99 € · Limit 369 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">LEGO Icons 10316 Der Herr der Ringe: Bruchtal (6.167 Teile, Exklusiv-Set)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">21% unter PVG/Ø (425 € · -90 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">942° MyDealz Community · PVG 425 €</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">LEGO-10316 · Score 46.2</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.mydealz.de/gruppe/lego" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3ACOLLECTIBLES%3ALEGO-10316%3A33490&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="COLLECTIBLES:LEGO-10316:33490" data-title="LEGO Icons 10316 Der Herr der Ringe: Bruchtal (6.167 Teile, Exklusiv-Set)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="LEGO-10316"
+                        data-title="LEGO Icons 10316 Der Herr der Ringe: Bruchtal (6.167 Teile, Exklusiv-Set)">
+                  Produkt (LEGO-10316) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="TECH:CPU-RYZEN-7-7800X3D:31900"
+                     data-category="tech"
+                     data-provider="mydealz"
+                     data-wishlist="true"
+                     data-price="319.00"
+                     data-score="44.80"
+                     data-savings="79.00"
+                     data-discount="19.80">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Tech &amp; Hardware</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Notebooksbilliger</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Neu</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MyDealz RSS</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">319.00 €</span>
+                  <span class="price-sub">PVG/Ø 398.00 € · Limit 349 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">AMD Ryzen 7 7800X3D 8x 4.20GHz So.AM5 WOF Gaming-Prozessor (96MB 3D V-Cache)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">20% unter PVG/Ø (398 € · -79 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">1.140° MyDealz Community · PVG 398 €</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">CPU-RYZEN-7-7800X3D · Score 44.8</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.mydealz.de/gruppe/elektronik" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3ATECH%3ACPU-RYZEN-7-7800X3D%3A31900&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="TECH:CPU-RYZEN-7-7800X3D:31900" data-title="AMD Ryzen 7 7800X3D 8x 4.20GHz So.AM5 WOF Gaming-Prozessor (96MB 3D V-Cache)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="CPU-RYZEN-7-7800X3D"
+                        data-title="AMD Ryzen 7 7800X3D 8x 4.20GHz So.AM5 WOF Gaming-Prozessor (96MB 3D V-Cache)">
+                  Produkt (CPU-RYZEN-7-7800X3D) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="FLIPS:TECH-STEAM-DECK-OLED-512:41900"
+                     data-category="flips"
+                     data-provider="ebay_official"
+                     data-wishlist="true"
+                     data-price="419.00"
+                     data-score="43.90"
+                     data-savings="150.00"
+                     data-discount="26.40">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Refurb &amp; eBay Flips</span>
+                  <span aria-hidden="true">·</span>
+                  <span>eBay.de · rebuy-shop (Geprüft)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Zertifiziert Refurbished</span>
+                  <span aria-hidden="true">·</span>
+                  <span>eBay Official API</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">419.00 €</span>
+                  <span class="price-sub">PVG/Ø 569.00 € · Limit 489 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">Valve Steam Deck OLED 512GB Handheld Konsole inkl. Original-Tasche &amp; Netzteil</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">26% unter PVG/Ø (569 € · -150 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">99.4% Positiv (14.820★) · eBay Käuferschutz</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">TECH-STEAM-DECK-OLED-512 · Score 43.9</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.ebay.de/b/PC-Videospiele/1249/bn_1849980" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3AFLIPS%3ATECH-STEAM-DECK-OLED-512%3A41900&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="FLIPS:TECH-STEAM-DECK-OLED-512:41900" data-title="Valve Steam Deck OLED 512GB Handheld Konsole inkl. Original-Tasche &amp; Netzteil">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="TECH-STEAM-DECK-OLED-512"
+                        data-title="Valve Steam Deck OLED 512GB Handheld Konsole inkl. Original-Tasche &amp; Netzteil">
+                  Produkt (TECH-STEAM-DECK-OLED-512) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="TECH:GPU-RTX-4070-SUPER:49900"
+                     data-category="tech"
+                     data-provider="mydealz"
+                     data-wishlist="true"
+                     data-price="499.00"
+                     data-score="43.10"
+                     data-savings="110.00"
+                     data-discount="18.10">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode meta-wishlist">Wunschliste</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Tech &amp; Hardware</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Mindfactory (MindStar)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Neu</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MyDealz RSS</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">499.00 €</span>
+                  <span class="price-sub">PVG/Ø 609.00 € · Limit 549 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">ASUS Dual GeForce RTX 4070 SUPER EVO OC Edition 12GB GDDR6X Grafikkarte</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">18% unter PVG/Ø (609 € · -110 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">785° MyDealz Community · PVG 609 €</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">GPU-RTX-4070-SUPER · Score 43.1</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.mydealz.de/gruppe/elektronik" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3ATECH%3AGPU-RTX-4070-SUPER%3A49900&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="TECH:GPU-RTX-4070-SUPER:49900" data-title="ASUS Dual GeForce RTX 4070 SUPER EVO OC Edition 12GB GDDR6X Grafikkarte">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="GPU-RTX-4070-SUPER"
+                        data-title="ASUS Dual GeForce RTX 4070 SUPER EVO OC Edition 12GB GDDR6X Grafikkarte">
+                  Produkt (GPU-RTX-4070-SUPER) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="COLLECTIBLES:LEGO-42154:7499"
+                     data-category="collectibles"
+                     data-provider="mydealz"
+                     data-wishlist="false"
+                     data-price="74.99"
+                     data-score="38.50"
+                     data-savings="29.91"
+                     data-discount="28.50">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode ">Explore-Deal</span>
+                  <span aria-hidden="true">·</span>
+                  <span>LEGO &amp; Collectibles</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Alternate.de</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Neu (OVP)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MyDealz RSS</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">74.99 €</span>
+                  <span class="price-sub">PVG/Ø 104.90 € · Limit 380 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">LEGO Technic 42154 Ford GT (2022) Maßstab 1:12 (1.466 Teile)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">29% unter PVG/Ø (105 € · -30 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">430° MyDealz Community · PVG 105 €</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">LEGO-42154 · Score 38.5</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.mydealz.de/gruppe/lego" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3ACOLLECTIBLES%3ALEGO-42154%3A7499&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="COLLECTIBLES:LEGO-42154:7499" data-title="LEGO Technic 42154 Ford GT (2022) Maßstab 1:12 (1.466 Teile)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="LEGO-42154"
+                        data-title="LEGO Technic 42154 Ford GT (2022) Maßstab 1:12 (1.466 Teile)">
+                  Produkt (LEGO-42154) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="TECH:TECH-SAMSUNG-990-PRO-2TB:11990"
+                     data-category="tech"
+                     data-provider="mydealz"
+                     data-wishlist="false"
+                     data-price="119.90"
+                     data-score="37.30"
+                     data-savings="45.00"
+                     data-discount="27.30">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode ">Explore-Deal</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Tech &amp; Hardware</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MediaMarkt (MwSt.-Aktion)</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Neu</span>
+                  <span aria-hidden="true">·</span>
+                  <span>MyDealz RSS</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">119.90 €</span>
+                  <span class="price-sub">PVG/Ø 164.90 € · Limit 550 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">Samsung 990 PRO NVMe M.2 SSD 2 TB (PCIe 4.0, 7.450 MB/s Lesen, PS5 kompatibel)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">27% unter PVG/Ø (165 € · -45 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">890° MyDealz Community · PVG 165 €</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">TECH-SAMSUNG-990-PRO-2TB · Score 37.3</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.mydealz.de/gruppe/elektronik" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3ATECH%3ATECH-SAMSUNG-990-PRO-2TB%3A11990&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="TECH:TECH-SAMSUNG-990-PRO-2TB:11990" data-title="Samsung 990 PRO NVMe M.2 SSD 2 TB (PCIe 4.0, 7.450 MB/s Lesen, PS5 kompatibel)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="TECH-SAMSUNG-990-PRO-2TB"
+                        data-title="Samsung 990 PRO NVMe M.2 SSD 2 TB (PCIe 4.0, 7.450 MB/s Lesen, PS5 kompatibel)">
+                  Produkt (TECH-SAMSUNG-990-PRO-2TB) sperren
+                </button>
+              </div>
+            </article>
+            
+
+            <article class="deal-card"
+                     data-signature="FLIPS:TECH-SONY-WH1000XM5:19800"
+                     data-category="flips"
+                     data-provider="ebay_official"
+                     data-wishlist="false"
+                     data-price="198.00"
+                     data-score="31.50"
+                     data-savings="81.00"
+                     data-discount="29.00">
+              <div class="deal-top">
+                <div class="deal-meta-line">
+                  <span class="meta-mode ">Explore-Deal</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Refurb &amp; eBay Flips</span>
+                  <span aria-hidden="true">·</span>
+                  <span>eBay.de · sony-certified-outlet</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Zertifiziert Refurbished</span>
+                  <span aria-hidden="true">·</span>
+                  <span>eBay Official API</span>
+                </div>
+                <div class="deal-price-block">
+                  <span class="price">198.00 €</span>
+                  <span class="price-sub">PVG/Ø 279.00 € · Limit 420 €</span>
+                </div>
+              </div>
+
+              <h2 class="deal-title">Sony WH-1000XM5 Kabellose Noise-Cancelling Over-Ear Kopfhörer (Schwarz)</h2>
+
+              <div class="deal-metrics-grid">
+                <div class="metric-cell">
+                  <span class="metric-label">Ersparnis & Bewertung</span>
+                  <span class="metric-value metric-savings">29% unter PVG/Ø (279 € · -81 €)</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Vertrauens-Signal (Trust Gate)</span>
+                  <span class="metric-value">99.7% Positiv (9.310★) · eBay Käuferschutz</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-label">Produktschlüssel & Score</span>
+                  <span class="metric-value mono">TECH-SONY-WH1000XM5 · Score 31.5</span>
+                </div>
+              </div>
+
+              <div class="actions">
+                <a class="button button-book" href="https://www.ebay.de/b/Kopfhorer/112529/bn_1617595" target="_blank" rel="noopener noreferrer">Zum Angebot ↗</a>
+                <a class="button button-exclude js-exclude-deal" href="https://github.com/KayToTheRopf/FlightScannerMK/issues/new?title=ignore-deal%3AFLIPS%3ATECH-SONY-WH1000XM5%3A19800&amp;labels=feedback-exclude" target="_blank" rel="noopener noreferrer" data-signature="FLIPS:TECH-SONY-WH1000XM5:19800" data-title="Sony WH-1000XM5 Kabellose Noise-Cancelling Over-Ear Kopfhörer (Schwarz)">🚫 Diesen Deal ausschließen</a>
+                <button type="button"
+                        class="button button-secondary js-exclude-item"
+                        data-target="TECH-SONY-WH1000XM5"
+                        data-title="Sony WH-1000XM5 Kabellose Noise-Cancelling Over-Ear Kopfhörer (Schwarz)">
+                  Produkt (TECH-SONY-WH1000XM5) sperren
+                </button>
+              </div>
+            </article>
+            
+      </div>
+    </section>
+
+    <section id="wishlist" class="section-block" aria-label="Wunschliste verwalten">
+      <div class="section-header">
+        <h2>Überwachte Wunschliste (Wishlist Targets)</h2>
+        <p>Spezifische Modelle, LEGO-Sets oder Spiele mit individuellem Maximalpreis in EUR (`config/search_config.yaml`).</p>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Schlüssel</th>
+            <th>Produkt / Modell</th>
+            <th>Kategorie</th>
+            <th>Suchbegriffe</th>
+            <th class="text-right">Max. Zielpreis</th>
+            <th class="text-right">Aktion</th>
+          </tr>
+        </thead>
+        <tbody id="wishlist-tbody">
+          <tr><td colspan="6" class="muted">Noch keine Einträge auf der Wunschliste.</td></tr>
+        </tbody>
+      </table>
+
+      <form id="form-add-wishlist" class="inline-form">
+        <input type="text" name="name" class="form-input" placeholder="Produktname (z.B. RTX 4080 Super oder LEGO 10333)" required style="min-width:240px;flex:1;">
+        <input type="text" name="code" class="form-input mono" placeholder="Code optional (z.B. LEGO-10333)" style="width:190px;">
+        <select name="category" class="form-input">
+          <option value="tech">Tech & Hardware</option>
+          <option value="collectibles">LEGO & Collectibles</option>
+          <option value="games">Games & Software</option>
+          <option value="flips">Refurb & eBay</option>
+        </select>
+        <input type="number" name="max_price_eur" class="form-input mono" placeholder="Max. Preis €" step="1" min="1" required style="width:130px;">
+        <button type="submit" class="button button-book">Zur Wunschliste hinzufügen</button>
+      </form>
+    </section>
+
+    <section id="blacklist" class="section-block" aria-label="Trap-Filter und Blacklist">
+      <div class="section-header">
+        <h2>Anti-Scam Trap-Filter & Blacklist</h2>
+        <p>Filtert Leerkartons („nur OVP“), defekte Bastlerware, Handyhüllen und unerwünschte Händler automatisch aus (`config/blacklist.json`).</p>
+      </div>
+
+      <div class="trap-list" id="trap-tokens-container">
+        <span class="muted">Keine Sperrbegriffe aktiv.</span>
+      </div>
+
+      <form id="form-add-blacklist" class="inline-form">
+        <input type="text" name="target" class="form-input" placeholder="z.B. keyword:defekt, merchant:ShopName oder LEGO-42154" required style="min-width:280px;flex:1;">
+        <button type="submit" class="button button-exclude">Zur Blacklist hinzufügen</button>
+      </form>
+    </section>
+
+    <section id="architecture" class="section-block" aria-label="Datenquellen und Trust-Architektur">
+      <div class="section-header">
+        <h2>Blockfreie Datenquellen & 3-Stufen-Trust-Architektur (Zero Scraping)</h2>
+        <p>Warum dieses Radar auf GitHub Actions niemals durch IP-Sperren oder Kleinanzeigen-Betrug ausfällt.</p>
+      </div>
+
+      <div class="sources-grid">
+        <div class="source-col">
+          <h3>01. MyDealz Official RSS & Pepper XML</h3>
+          <p>Liest die offiziellen XML-Feeds für Elektronik, Gaming, LEGO und Uhren inkl. `nextBestPrice` (PVG-Vergleichspreis) und prüft die Community-Temperatur (z.B. ≥ 100°).</p>
+        </div>
+        <div class="source-col">
+          <h3>02. Steam DE & CheapShark JSON API</h3>
+          <p>Fragt offizielle REST-Endpunkte für digitale PC-Spiele ab (nur autorisierte Stores wie Steam, GOG, Humble) und kombiniert historische Tiefstpreise mit dem Steam-Review-Score.</p>
+        </div>
+        <div class="source-col">
+          <h3>03. eBay Official Browse REST API</h3>
+          <p>Nutzt OAuth2-Filter statt HTML-Scraping: Nur Sofort-Kaufen, ≥ 98,5 % positive Verkäuferbewertungen und Ausschluss von Zustandscode 7000 (Defekt / Ersatzteile).</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Multi-Market Deal & Flip Radar · Läuft lokal auf Port 3000 sowie automatisiert via GitHub Actions.</span>
+    <span>Preise und Verfügbarkeiten können sich jederzeit ändern. Bitte beim jeweiligen Händler prüfen.</span>
+  </footer>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script id="initial-radar-state" type="application/json">{"dealCount": 12, "wishlistCount": 0, "trapCount": 0}</script>
+  <script>
+    (function() {
+      const toastEl = document.getElementById('toast');
+      let toastTimer = null;
+      function showToast(msg) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add('visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('visible'), 3200);
+      }
+
+      let activeCat = 'all';
+      let activeMode = 'all';
+      let activeProvider = 'all';
+
+      const container = document.getElementById('deal-list-container');
+      const searchInput = document.getElementById('deal-search');
+      const sortSelect = document.getElementById('deal-sort');
+      const kpiDealCount = document.getElementById('kpi-deal-count');
+
+      function applyFiltersAndSort() {
+        if (!container) return;
+        const cards = Array.from(container.querySelectorAll('.deal-card'));
+        const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+        const sortBy = sortSelect ? sortSelect.value : 'score';
+
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const cat = card.getAttribute('data-category') || '';
+          const prov = card.getAttribute('data-provider') || '';
+          const isWish = card.getAttribute('data-wishlist') === 'true';
+          const text = card.textContent.toLowerCase();
+
+          const matchCat = (activeCat === 'all') || (cat === activeCat);
+          const matchProv = (activeProvider === 'all') || (prov === activeProvider);
+          const matchMode = (activeMode === 'all') ||
+                            (activeMode === 'wishlist' && isWish) ||
+                            (activeMode === 'explore' && !isWish);
+          const matchQuery = !query || text.includes(query);
+
+          const show = matchCat && matchProv && matchMode && matchQuery;
+          card.style.display = show ? '' : 'none';
+          if (show) visibleCount++;
+        });
+
+        cards.sort((a, b) => {
+          if (sortBy === 'price-asc') {
+            return parseFloat(a.dataset.price || '0') - parseFloat(b.dataset.price || '0');
+          }
+          if (sortBy === 'savings') {
+            return parseFloat(b.dataset.savings || '0') - parseFloat(a.dataset.savings || '0');
+          }
+          if (sortBy === 'discount') {
+            return parseFloat(b.dataset.discount || '0') - parseFloat(a.dataset.discount || '0');
+          }
+          return parseFloat(b.dataset.score || '0') - parseFloat(a.dataset.score || '0');
+        });
+
+        cards.forEach(card => container.appendChild(card));
+        if (kpiDealCount) kpiDealCount.textContent = String(visibleCount);
+      }
+
+      document.querySelectorAll('[data-filter-cat]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-filter-cat]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeCat = btn.getAttribute('data-filter-cat') || 'all';
+          applyFiltersAndSort();
+        });
+      });
+
+      document.querySelectorAll('[data-filter-mode]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-filter-mode]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeMode = btn.getAttribute('data-filter-mode') || 'all';
+          applyFiltersAndSort();
+        });
+      });
+
+      document.querySelectorAll('[data-filter-provider]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-filter-provider]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeProvider = btn.getAttribute('data-filter-provider') || 'all';
+          applyFiltersAndSort();
+        });
+      });
+
+      if (searchInput) searchInput.addEventListener('input', applyFiltersAndSort);
+      if (sortSelect) sortSelect.addEventListener('change', applyFiltersAndSort);
+
+      // 1-Klick Deal ausblenden (nutzt lokales API-Backend, fällt auf GitHub Issue Link zurück wenn statisch)
+      document.querySelectorAll('.js-exclude-deal').forEach(btn => {
+        btn.addEventListener('click', async (ev) => {
+          const signature = btn.getAttribute('data-signature');
+          if (!signature) return;
+          try {
+            ev.preventDefault();
+            const resp = await fetch('/api/exclude-deal', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ signature })
+            });
+            if (resp.ok) {
+              const card = btn.closest('.deal-card');
+              if (card) card.remove();
+              applyFiltersAndSort();
+              showToast('Deal wurde dauerhaft ausgeblendet.');
+              return;
+            }
+          } catch (_) {
+            const href = btn.getAttribute('href');
+            if (href) window.open(href, '_blank', 'noopener');
+          }
+        });
+      });
+
+      // Produktschlüssel sperren
+      document.querySelectorAll('.js-exclude-item').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const target = btn.getAttribute('data-target');
+          if (!target) return;
+          try {
+            const resp = await fetch('/api/exclude', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ target })
+            });
+            const data = await resp.json();
+            showToast(data.message || 'Produkt auf die Blacklist gesetzt.');
+            if (resp.ok) setTimeout(() => window.location.reload(), 600);
+          } catch (_) {
+            showToast('Aktion erfordert laufenden Radar-Server.');
+          }
+        });
+      });
+
+      // Wunschliste hinzufügen
+      const wishlistForm = document.getElementById('form-add-wishlist');
+      if (wishlistForm) {
+        wishlistForm.addEventListener('submit', async (ev) => {
+          ev.preventDefault();
+          const fd = new FormData(wishlistForm);
+          const payload = {
+            name: fd.get('name'),
+            code: fd.get('code'),
+            category: fd.get('category'),
+            max_price_eur: parseFloat(String(fd.get('max_price_eur') || '0'))
+          };
+          try {
+            const resp = await fetch('/api/wishlist', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            showToast(data.message || 'Wunschliste aktualisiert.');
+            if (resp.ok) setTimeout(() => window.location.reload(), 600);
+          } catch (_) {
+            showToast('Konnte Wunschliste nicht speichern.');
+          }
+        });
+      }
+
+      // Wunschliste-Eintrag entfernen
+      document.querySelectorAll('.js-remove-wishlist').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const code = btn.getAttribute('data-code');
+          if (!code) return;
+          try {
+            const resp = await fetch('/api/wishlist/remove', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code })
+            });
+            const data = await resp.json();
+            showToast(data.message || 'Eintrag entfernt.');
+            if (resp.ok) setTimeout(() => window.location.reload(), 500);
+          } catch (_) {}
+        });
+      });
+
+      // Blacklist hinzufügen
+      const blForm = document.getElementById('form-add-blacklist');
+      if (blForm) {
+        blForm.addEventListener('submit', async (ev) => {
+          ev.preventDefault();
+          const fd = new FormData(blForm);
+          const target = fd.get('target');
+          try {
+            const resp = await fetch('/api/exclude', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ target })
+            });
+            const data = await resp.json();
+            showToast(data.message || 'Blacklist aktualisiert.');
+            if (resp.ok) setTimeout(() => window.location.reload(), 500);
+          } catch (_) {}
+        });
+      }
+
+      // Blacklist-Eintrag entfernen
+      document.querySelectorAll('.js-remove-blacklist').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const target = btn.getAttribute('data-target');
+          if (!target) return;
+          try {
+            const resp = await fetch('/api/unexclude', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ target })
+            });
+            const data = await resp.json();
+            showToast(data.message || 'Filter entfernt.');
+            if (resp.ok) setTimeout(() => window.location.reload(), 500);
+          } catch (_) {}
+        });
+      });
+
+      // Live-Scan Button
+      const scanBtn = document.getElementById('btn-live-scan');
+      if (scanBtn) {
+        scanBtn.addEventListener('click', async () => {
+          scanBtn.disabled = true;
+          const origText = scanBtn.textContent;
+          scanBtn.textContent = 'Scanne RSS & APIs...';
+          showToast('Starte Live-Abfrage (MyDealz RSS, Steam/CheapShark & eBay API)...');
+          try {
+            const resp = await fetch('/api/scan', { method: 'POST' });
+            const data = await resp.json();
+            showToast(data.message || 'Live-Scan abgeschlossen.');
+            setTimeout(() => window.location.reload(), 900);
+          } catch (_) {
+            showToast('Live-Scan konnte nicht ausgeführt werden.');
+            scanBtn.disabled = false;
+            scanBtn.textContent = origText;
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

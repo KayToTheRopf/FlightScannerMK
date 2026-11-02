@@ -1,0 +1,5 @@
+{
+  "name": "Multi-Market Deal & Flip Radar",
+  "description": "Automatische, blockfreie Schnäppchen-Suche für Tech & Hardware, Games, LEGO/Collectibles und geprüfte Refurb-Deals via MyDealz RSS, Steam/CheapShark API und eBay Official API.",
+  "requestFramePermissions": []
+}

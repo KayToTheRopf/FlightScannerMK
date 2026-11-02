@@ -12,7 +12,20 @@ Für den automatischen 2x-täglich-Lauf in GitHub Actions wird dieser Server NIC
 
 from typing import Optional
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError:
+    class FastMCP:  # type: ignore[no-redef]
+        def __init__(self, name: str) -> None:
+            self.name = name
+
+        def tool(self):
+            def decorator(fn):
+                return fn
+            return decorator
+
+        def run(self) -> None:
+            pass
 
 from src.analyzer import DealAnalyzer
 from src.handle_feedback import add_exclusion, add_or_update_wishlist, load_blacklist

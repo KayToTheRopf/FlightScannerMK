@@ -1,6 +1,10 @@
 {
-  "excluded_airports": [],
-  "excluded_cities": [],
+  "excluded_airports": [
+    "BNX"
+  ],
+  "excluded_cities": [
+    "Banja Luka"
+  ],
   "excluded_countries": [],
   "notes": "Orte in dieser Datei werden bei der Schnäppchen-Suche automatisch ignoriert. Kann per 1-Klick-Link aus Discord/GitHub/Mail oder per Kommentar '/exclude <IATA oder Stadt>' erweitert werden."
 }

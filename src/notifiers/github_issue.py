@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 from typing import List, Optional
 
-import requests
+from src.compat import requests_mod as requests
 
 from src.models import EvaluatedDeal
 

@@ -27,10 +27,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
 
       - name: Abhängigkeiten installieren
-        run: pip install -r requirements.txt
+        run: pip install requests>=2.31.0 PyYAML>=6.0.1 fast-flights>=2.0 pytest>=8.0.0
 
       - name: Flugschnäppchen ab MUC & FMM suchen
         env:
