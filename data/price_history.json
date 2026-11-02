@@ -10,43 +10,43 @@
     },
     "FMM-BBU": {
       "destination_name": "Bukarest",
-      "avg_price_eur": 70.06,
+      "avg_price_eur": 76.27,
       "min_price_eur": 29.98,
       "max_price_eur": 149.98,
-      "observations": 720,
-      "last_seen_utc": "2026-10-28T13:51:59.123846+00:00"
+      "observations": 780,
+      "last_seen_utc": "2026-11-02T18:18:18.836868+00:00"
     },
     "FMM-ALC": {
       "destination_name": "Alicante",
       "avg_price_eur": 124.87,
       "min_price_eur": 40.98,
       "max_price_eur": 192.0,
-      "observations": 1301,
-      "last_seen_utc": "2026-10-28T13:51:59.124134+00:00"
+      "observations": 1409,
+      "last_seen_utc": "2026-11-02T18:18:18.837097+00:00"
     },
     "FMM-AGP": {
       "destination_name": "Málaga",
-      "avg_price_eur": 119.4,
-      "min_price_eur": 49.98,
+      "avg_price_eur": 114.91,
+      "min_price_eur": 41.98,
       "max_price_eur": 180.0,
-      "observations": 1315,
-      "last_seen_utc": "2026-10-28T13:51:59.124817+00:00"
+      "observations": 1426,
+      "last_seen_utc": "2026-11-02T18:18:18.838008+00:00"
     },
     "FMM-BDS": {
       "destination_name": "Brindisi",
-      "avg_price_eur": 117.38,
+      "avg_price_eur": 120.59,
       "min_price_eur": 91.98,
       "max_price_eur": 151.98,
-      "observations": 182,
-      "last_seen_utc": "2026-10-28T13:51:59.124139+00:00"
+      "observations": 200,
+      "last_seen_utc": "2026-11-02T18:18:18.837002+00:00"
     },
     "FMM-MLA": {
       "destination_name": "Malta",
-      "avg_price_eur": 107.2,
+      "avg_price_eur": 104.24,
       "min_price_eur": 36.0,
       "max_price_eur": 228.0,
-      "observations": 36,
-      "last_seen_utc": "2026-10-28T13:51:59.124492+00:00"
+      "observations": 37,
+      "last_seen_utc": "2026-11-02T18:18:18.837129+00:00"
     },
     "FMM-CTA": {
       "destination_name": "Catania (Sizilien)",
@@ -58,123 +58,123 @@
     },
     "FMM-KRK": {
       "destination_name": "Krakau",
-      "avg_price_eur": 84.94,
+      "avg_price_eur": 83.56,
       "min_price_eur": 41.0,
       "max_price_eur": 114.0,
-      "observations": 23,
-      "last_seen_utc": "2026-10-28T13:51:59.124422+00:00"
+      "observations": 24,
+      "last_seen_utc": "2026-11-02T18:18:18.837297+00:00"
     },
     "FMM-SCV": {
       "destination_name": "SCV",
-      "avg_price_eur": 55.04,
+      "avg_price_eur": 60.06,
       "min_price_eur": 45.0,
-      "max_price_eur": 65.0,
-      "observations": 24,
-      "last_seen_utc": "2026-10-28T13:51:59.124266+00:00"
+      "max_price_eur": 161.0,
+      "observations": 27,
+      "last_seen_utc": "2026-11-02T18:18:18.837940+00:00"
     },
     "FMM-TGD": {
       "destination_name": "Podgorica",
-      "avg_price_eur": 109.0,
+      "avg_price_eur": 106.37,
       "min_price_eur": 48.0,
       "max_price_eur": 156.0,
-      "observations": 21,
-      "last_seen_utc": "2026-10-28T13:51:59.124401+00:00"
+      "observations": 23,
+      "last_seen_utc": "2026-11-02T18:18:18.837616+00:00"
     },
     "FMM-TNG": {
       "destination_name": "Tanger",
-      "avg_price_eur": 84.64,
+      "avg_price_eur": 83.13,
       "min_price_eur": 52.0,
       "max_price_eur": 117.0,
-      "observations": 24,
-      "last_seen_utc": "2026-10-28T13:51:59.124444+00:00"
+      "observations": 25,
+      "last_seen_utc": "2026-11-02T18:18:18.837223+00:00"
     },
     "FMM-SOF": {
       "destination_name": "Sofia",
-      "avg_price_eur": 100.19,
+      "avg_price_eur": 97.44,
       "min_price_eur": 54.0,
       "max_price_eur": 176.0,
-      "observations": 23,
-      "last_seen_utc": "2026-10-28T13:51:59.124281+00:00"
+      "observations": 25,
+      "last_seen_utc": "2026-11-02T18:18:18.837374+00:00"
     },
     "FMM-PMI": {
       "destination_name": "Palma de Mallorca",
-      "avg_price_eur": 115.58,
+      "avg_price_eur": 128.79,
       "min_price_eur": 56.0,
-      "max_price_eur": 181.0,
-      "observations": 39,
-      "last_seen_utc": "2026-10-28T13:51:59.124836+00:00"
+      "max_price_eur": 271.0,
+      "observations": 45,
+      "last_seen_utc": "2026-11-02T18:18:18.838615+00:00"
     },
     "FMM-OPO": {
       "destination_name": "Porto",
-      "avg_price_eur": 77.71,
+      "avg_price_eur": 83.86,
       "min_price_eur": 59.0,
-      "max_price_eur": 96.0,
-      "observations": 31,
-      "last_seen_utc": "2026-10-28T13:51:59.124313+00:00"
+      "max_price_eur": 199.0,
+      "observations": 33,
+      "last_seen_utc": "2026-11-02T18:18:18.838284+00:00"
     },
     "FMM-LON": {
       "destination_name": "LON",
-      "avg_price_eur": 58.15,
+      "avg_price_eur": 57.75,
       "min_price_eur": 34.0,
-      "max_price_eur": 66.0,
-      "observations": 22,
-      "last_seen_utc": "2026-10-28T13:51:59.124272+00:00"
+      "max_price_eur": 71.0,
+      "observations": 25,
+      "last_seen_utc": "2026-11-02T18:18:18.837369+00:00"
     },
     "FMM-RMO": {
       "destination_name": "RMO",
-      "avg_price_eur": 88.77,
+      "avg_price_eur": 89.1,
       "min_price_eur": 66.0,
       "max_price_eur": 114.0,
-      "observations": 26,
-      "last_seen_utc": "2026-10-28T13:51:59.124365+00:00"
+      "observations": 28,
+      "last_seen_utc": "2026-11-02T18:18:18.837545+00:00"
     },
     "FMM-BEG": {
       "destination_name": "Belgrad",
-      "avg_price_eur": 115.46,
+      "avg_price_eur": 112.49,
       "min_price_eur": 54.0,
       "max_price_eur": 189.0,
-      "observations": 48,
-      "last_seen_utc": "2026-10-28T13:51:59.124799+00:00"
+      "observations": 51,
+      "last_seen_utc": "2026-11-02T18:18:18.837711+00:00"
     },
     "FMM-ROM": {
       "destination_name": "ROM",
-      "avg_price_eur": 105.13,
+      "avg_price_eur": 107.41,
       "min_price_eur": 51.0,
       "max_price_eur": 185.0,
-      "observations": 122,
-      "last_seen_utc": "2026-10-28T13:51:59.124591+00:00"
+      "observations": 134,
+      "last_seen_utc": "2026-11-02T18:18:18.837958+00:00"
     },
     "FMM-PRN": {
       "destination_name": "Pristina",
-      "avg_price_eur": 78.59,
+      "avg_price_eur": 78.54,
       "min_price_eur": 78.0,
       "max_price_eur": 79.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124293+00:00"
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.837387+00:00"
     },
     "FMM-SKP": {
       "destination_name": "Skopje",
-      "avg_price_eur": 92.29,
-      "min_price_eur": 86.0,
+      "avg_price_eur": 89.36,
+      "min_price_eur": 48.0,
       "max_price_eur": 98.0,
-      "observations": 24,
-      "last_seen_utc": "2026-10-28T13:51:59.124333+00:00"
+      "observations": 27,
+      "last_seen_utc": "2026-11-02T18:18:18.837461+00:00"
     },
     "FMM-EVN": {
       "destination_name": "EVN",
-      "avg_price_eur": 122.22,
-      "min_price_eur": 85.0,
+      "avg_price_eur": 122.72,
+      "min_price_eur": 82.0,
       "max_price_eur": 195.0,
-      "observations": 37,
-      "last_seen_utc": "2026-10-28T13:51:59.124482+00:00"
+      "observations": 44,
+      "last_seen_utc": "2026-11-02T18:18:18.838247+00:00"
     },
     "MUC-LON": {
       "destination_name": "LON",
-      "avg_price_eur": 146.88,
+      "avg_price_eur": 146.86,
       "min_price_eur": 82.0,
       "max_price_eur": 258.0,
-      "observations": 37,
-      "last_seen_utc": "2026-10-28T13:51:59.125081+00:00"
+      "observations": 39,
+      "last_seen_utc": "2026-11-02T18:18:18.838262+00:00"
     },
     "FMM-TIA": {
       "destination_name": "Tirana",
@@ -186,11 +186,11 @@
     },
     "FMM-TCI": {
       "destination_name": "TCI",
-      "avg_price_eur": 142.03,
+      "avg_price_eur": 151.86,
       "min_price_eur": 90.0,
-      "max_price_eur": 203.0,
-      "observations": 89,
-      "last_seen_utc": "2026-10-28T13:51:59.124909+00:00"
+      "max_price_eur": 263.0,
+      "observations": 94,
+      "last_seen_utc": "2026-11-02T18:18:18.838587+00:00"
     },
     "MUC-SXB": {
       "destination_name": "SXB",
@@ -210,51 +210,51 @@
     },
     "MUC-LUX": {
       "destination_name": "LUX",
-      "avg_price_eur": 103.51,
+      "avg_price_eur": 105.9,
       "min_price_eur": 101.0,
-      "max_price_eur": 110.0,
-      "observations": 22,
-      "last_seen_utc": "2026-10-28T13:51:59.124394+00:00"
+      "max_price_eur": 148.0,
+      "observations": 25,
+      "last_seen_utc": "2026-11-02T18:18:18.837847+00:00"
     },
     "MUC-BCN": {
       "destination_name": "Barcelona",
-      "avg_price_eur": 139.67,
+      "avg_price_eur": 151.09,
       "min_price_eur": 101.0,
       "max_price_eur": 239.0,
-      "observations": 241,
-      "last_seen_utc": "2026-10-28T13:51:59.124742+00:00"
+      "observations": 257,
+      "last_seen_utc": "2026-11-02T18:18:18.838408+00:00"
     },
     "MUC-BEG": {
       "destination_name": "Belgrad",
-      "avg_price_eur": 119.52,
-      "min_price_eur": 101.0,
+      "avg_price_eur": 117.51,
+      "min_price_eur": 99.0,
       "max_price_eur": 268.0,
-      "observations": 52,
-      "last_seen_utc": "2026-10-28T13:51:59.124546+00:00"
+      "observations": 56,
+      "last_seen_utc": "2026-11-02T18:18:18.837702+00:00"
     },
     "FMM-PFO": {
       "destination_name": "Paphos",
-      "avg_price_eur": 108.0,
+      "avg_price_eur": 108.55,
       "min_price_eur": 108.0,
-      "max_price_eur": 108.0,
-      "observations": 7,
-      "last_seen_utc": "2026-10-26T13:58:54.093084+00:00"
+      "max_price_eur": 112.0,
+      "observations": 9,
+      "last_seen_utc": "2026-11-02T18:18:18.837640+00:00"
     },
     "FMM-DUB": {
       "destination_name": "Dublin",
-      "avg_price_eur": 142.2,
-      "min_price_eur": 108.0,
+      "avg_price_eur": 140.29,
+      "min_price_eur": 102.0,
       "max_price_eur": 172.0,
-      "observations": 36,
-      "last_seen_utc": "2026-10-28T13:51:59.124765+00:00"
+      "observations": 37,
+      "last_seen_utc": "2026-11-02T18:18:18.837508+00:00"
     },
     "MUC-IST": {
       "destination_name": "Istanbul",
-      "avg_price_eur": 121.42,
+      "avg_price_eur": 119.83,
       "min_price_eur": 105.0,
       "max_price_eur": 231.0,
-      "observations": 67,
-      "last_seen_utc": "2026-10-28T13:51:59.125023+00:00"
+      "observations": 70,
+      "last_seen_utc": "2026-11-02T18:18:18.837630+00:00"
     },
     "FMM-SKG": {
       "destination_name": "Thessaloniki",
@@ -266,59 +266,59 @@
     },
     "MUC-PMI": {
       "destination_name": "Palma de Mallorca",
-      "avg_price_eur": 193.96,
+      "avg_price_eur": 188.28,
       "min_price_eur": 113.0,
       "max_price_eur": 311.0,
-      "observations": 152,
-      "last_seen_utc": "2026-10-28T13:51:59.125139+00:00"
+      "observations": 160,
+      "last_seen_utc": "2026-11-02T18:18:18.838221+00:00"
     },
     "MUC-ZAG": {
       "destination_name": "Zagreb",
-      "avg_price_eur": 115.0,
+      "avg_price_eur": 121.0,
       "min_price_eur": 115.0,
-      "max_price_eur": 115.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124428+00:00"
+      "max_price_eur": 171.0,
+      "observations": 15,
+      "last_seen_utc": "2026-11-02T18:18:18.838044+00:00"
     },
     "MUC-ROM": {
       "destination_name": "ROM",
-      "avg_price_eur": 196.66,
-      "min_price_eur": 113.0,
+      "avg_price_eur": 180.24,
+      "min_price_eur": 83.0,
       "max_price_eur": 484.0,
-      "observations": 276,
-      "last_seen_utc": "2026-10-28T13:51:59.125197+00:00"
+      "observations": 296,
+      "last_seen_utc": "2026-11-02T18:18:18.838623+00:00"
     },
     "MUC-DUB": {
       "destination_name": "Dublin",
-      "avg_price_eur": 142.82,
+      "avg_price_eur": 143.92,
       "min_price_eur": 117.0,
       "max_price_eur": 180.0,
-      "observations": 29,
-      "last_seen_utc": "2026-10-28T13:51:59.124635+00:00"
+      "observations": 30,
+      "last_seen_utc": "2026-11-02T18:18:18.837999+00:00"
     },
     "MUC-ALC": {
       "destination_name": "Alicante",
-      "avg_price_eur": 172.63,
+      "avg_price_eur": 175.78,
       "min_price_eur": 117.0,
       "max_price_eur": 206.0,
-      "observations": 8,
-      "last_seen_utc": "2026-10-28T13:51:59.124929+00:00"
+      "observations": 9,
+      "last_seen_utc": "2026-11-02T18:18:18.838303+00:00"
     },
     "MUC-BUH": {
       "destination_name": "BUH",
-      "avg_price_eur": 118.0,
-      "min_price_eur": 118.0,
-      "max_price_eur": 118.0,
-      "observations": 11,
-      "last_seen_utc": "2026-10-27T21:53:55.662427+00:00"
+      "avg_price_eur": 121.99,
+      "min_price_eur": 104.0,
+      "max_price_eur": 200.0,
+      "observations": 15,
+      "last_seen_utc": "2026-11-02T18:18:18.838298+00:00"
     },
     "MUC-EDI": {
       "destination_name": "Edinburgh",
-      "avg_price_eur": 165.4,
+      "avg_price_eur": 162.27,
       "min_price_eur": 108.0,
       "max_price_eur": 289.0,
-      "observations": 17,
-      "last_seen_utc": "2026-10-28T13:51:59.124375+00:00"
+      "observations": 18,
+      "last_seen_utc": "2026-11-02T18:18:18.837577+00:00"
     },
     "FMM-VAR": {
       "destination_name": "Varna",
@@ -330,35 +330,35 @@
     },
     "MUC-ATH": {
       "destination_name": "Athen",
-      "avg_price_eur": 208.1,
+      "avg_price_eur": 196.63,
       "min_price_eur": 125.0,
       "max_price_eur": 325.0,
-      "observations": 258,
-      "last_seen_utc": "2026-10-28T13:51:59.125151+00:00"
+      "observations": 267,
+      "last_seen_utc": "2026-11-02T18:18:18.838498+00:00"
     },
     "MUC-MAN": {
       "destination_name": "Manchester",
-      "avg_price_eur": 134.0,
+      "avg_price_eur": 142.71,
       "min_price_eur": 134.0,
-      "max_price_eur": 134.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124525+00:00"
+      "max_price_eur": 247.0,
+      "observations": 14,
+      "last_seen_utc": "2026-11-02T18:18:18.838533+00:00"
     },
     "FMM-BUD": {
       "destination_name": "Budapest",
-      "avg_price_eur": 155.63,
-      "min_price_eur": 135.0,
+      "avg_price_eur": 152.45,
+      "min_price_eur": 92.0,
       "max_price_eur": 191.0,
-      "observations": 19,
-      "last_seen_utc": "2026-10-28T13:51:59.124534+00:00"
+      "observations": 20,
+      "last_seen_utc": "2026-11-02T18:18:18.837456+00:00"
     },
     "MUC-AGP": {
       "destination_name": "Málaga",
-      "avg_price_eur": 160.92,
+      "avg_price_eur": 163.3,
       "min_price_eur": 137.0,
-      "max_price_eur": 171.0,
-      "observations": 31,
-      "last_seen_utc": "2026-10-28T13:51:59.124736+00:00"
+      "max_price_eur": 211.0,
+      "observations": 32,
+      "last_seen_utc": "2026-11-02T18:18:18.838396+00:00"
     },
     "MUC-PRN": {
       "destination_name": "Pristina",
@@ -370,19 +370,19 @@
     },
     "MUC-MIL": {
       "destination_name": "MIL",
-      "avg_price_eur": 144.82,
+      "avg_price_eur": 144.33,
       "min_price_eur": 134.0,
       "max_price_eur": 156.0,
-      "observations": 33,
-      "last_seen_utc": "2026-10-28T13:51:59.124653+00:00"
+      "observations": 35,
+      "last_seen_utc": "2026-11-02T18:18:18.837825+00:00"
     },
     "FMM-KUT": {
       "destination_name": "KUT",
-      "avg_price_eur": 139.0,
+      "avg_price_eur": 146.8,
       "min_price_eur": 139.0,
-      "max_price_eur": 139.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124562+00:00"
+      "max_price_eur": 210.0,
+      "observations": 15,
+      "last_seen_utc": "2026-11-02T18:18:18.838378+00:00"
     },
     "FMM-WRO": {
       "destination_name": "WRO",
@@ -394,11 +394,11 @@
     },
     "FMM-BUH": {
       "destination_name": "BUH",
-      "avg_price_eur": 145.0,
-      "min_price_eur": 145.0,
+      "avg_price_eur": 141.92,
+      "min_price_eur": 105.0,
       "max_price_eur": 145.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124583+00:00"
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.837529+00:00"
     },
     "FMM-WAW": {
       "destination_name": "Warschau",
@@ -410,27 +410,27 @@
     },
     "MUC-IBZ": {
       "destination_name": "Ibiza",
-      "avg_price_eur": 148.0,
+      "avg_price_eur": 149.31,
       "min_price_eur": 148.0,
-      "max_price_eur": 148.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124607+00:00"
+      "max_price_eur": 165.0,
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.837981+00:00"
     },
     "MUC-MAD": {
       "destination_name": "Madrid",
-      "avg_price_eur": 152.0,
-      "min_price_eur": 152.0,
-      "max_price_eur": 152.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124627+00:00"
+      "avg_price_eur": 152.21,
+      "min_price_eur": 127.0,
+      "max_price_eur": 188.0,
+      "observations": 15,
+      "last_seen_utc": "2026-11-02T18:18:18.838207+00:00"
     },
     "MUC-PAR": {
       "destination_name": "PAR",
-      "avg_price_eur": 172.4,
-      "min_price_eur": 156.0,
-      "max_price_eur": 195.0,
-      "observations": 53,
-      "last_seen_utc": "2026-10-28T13:51:59.124819+00:00"
+      "avg_price_eur": 172.46,
+      "min_price_eur": 138.0,
+      "max_price_eur": 201.0,
+      "observations": 57,
+      "last_seen_utc": "2026-11-02T18:18:18.838312+00:00"
     },
     "MUC-TUN": {
       "destination_name": "TUN",
@@ -442,19 +442,19 @@
     },
     "MUC-AYT": {
       "destination_name": "Antalya",
-      "avg_price_eur": 173.11,
+      "avg_price_eur": 181.17,
       "min_price_eur": 140.0,
-      "max_price_eur": 192.0,
-      "observations": 56,
-      "last_seen_utc": "2026-10-28T13:51:59.124875+00:00"
+      "max_price_eur": 310.0,
+      "observations": 62,
+      "last_seen_utc": "2026-11-02T18:18:18.838668+00:00"
     },
     "MUC-TOS": {
       "destination_name": "TOS",
-      "avg_price_eur": 183.26,
+      "avg_price_eur": 185.49,
       "min_price_eur": 158.0,
-      "max_price_eur": 214.0,
-      "observations": 27,
-      "last_seen_utc": "2026-10-28T13:51:59.124946+00:00"
+      "max_price_eur": 230.0,
+      "observations": 28,
+      "last_seen_utc": "2026-11-02T18:18:18.838485+00:00"
     },
     "MUC-VIE": {
       "destination_name": "Wien",
@@ -482,11 +482,11 @@
     },
     "MUC-GVA": {
       "destination_name": "GVA",
-      "avg_price_eur": 166.0,
+      "avg_price_eur": 167.1,
       "min_price_eur": 163.0,
-      "max_price_eur": 167.0,
-      "observations": 24,
-      "last_seen_utc": "2026-10-28T13:51:59.124739+00:00"
+      "max_price_eur": 189.0,
+      "observations": 25,
+      "last_seen_utc": "2026-11-02T18:18:18.838216+00:00"
     },
     "MUC-BRE": {
       "destination_name": "BRE",
@@ -498,11 +498,11 @@
     },
     "MUC-ANK": {
       "destination_name": "ANK",
-      "avg_price_eur": 189.68,
-      "min_price_eur": 164.0,
+      "avg_price_eur": 188.22,
+      "min_price_eur": 159.0,
       "max_price_eur": 281.0,
-      "observations": 30,
-      "last_seen_utc": "2026-10-28T13:51:59.124791+00:00"
+      "observations": 31,
+      "last_seen_utc": "2026-11-02T18:18:18.837931+00:00"
     },
     "MUC-FMO": {
       "destination_name": "FMO",
@@ -522,35 +522,35 @@
     },
     "MUC-NCE": {
       "destination_name": "Nizza",
-      "avg_price_eur": 215.67,
+      "avg_price_eur": 215.3,
       "min_price_eur": 167.0,
       "max_price_eur": 317.0,
-      "observations": 34,
-      "last_seen_utc": "2026-10-28T13:51:59.124998+00:00"
+      "observations": 35,
+      "last_seen_utc": "2026-11-02T18:18:18.838363+00:00"
     },
     "MUC-OSL": {
       "destination_name": "Oslo",
-      "avg_price_eur": 178.42,
+      "avg_price_eur": 177.41,
       "min_price_eur": 150.0,
       "max_price_eur": 201.0,
-      "observations": 24,
-      "last_seen_utc": "2026-10-28T13:51:59.124751+00:00"
+      "observations": 26,
+      "last_seen_utc": "2026-11-02T18:18:18.838021+00:00"
     },
     "MUC-RMO": {
       "destination_name": "RMO",
-      "avg_price_eur": 171.71,
+      "avg_price_eur": 171.96,
       "min_price_eur": 170.0,
-      "max_price_eur": 173.0,
-      "observations": 21,
-      "last_seen_utc": "2026-10-28T13:51:59.124776+00:00"
+      "max_price_eur": 177.0,
+      "observations": 22,
+      "last_seen_utc": "2026-11-02T18:18:18.838088+00:00"
     },
     "MUC-BRU": {
       "destination_name": "Brüssel",
-      "avg_price_eur": 172.0,
+      "avg_price_eur": 172.92,
       "min_price_eur": 172.0,
-      "max_price_eur": 172.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124768+00:00"
+      "max_price_eur": 184.0,
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.838177+00:00"
     },
     "MUC-SKG": {
       "destination_name": "Thessaloniki",
@@ -562,19 +562,19 @@
     },
     "MUC-SSH": {
       "destination_name": "SSH",
-      "avg_price_eur": 274.69,
+      "avg_price_eur": 271.85,
       "min_price_eur": 173.0,
       "max_price_eur": 337.0,
-      "observations": 30,
-      "last_seen_utc": "2026-10-28T13:51:59.125165+00:00"
+      "observations": 33,
+      "last_seen_utc": "2026-11-02T18:18:18.838636+00:00"
     },
     "MUC-TCI": {
       "destination_name": "TCI",
-      "avg_price_eur": 245.61,
+      "avg_price_eur": 223.57,
       "min_price_eur": 147.0,
       "max_price_eur": 378.0,
-      "observations": 249,
-      "last_seen_utc": "2026-10-28T13:51:59.125180+00:00"
+      "observations": 267,
+      "last_seen_utc": "2026-11-02T18:18:18.838582+00:00"
     },
     "FMM-IST": {
       "destination_name": "Istanbul",
@@ -594,27 +594,27 @@
     },
     "MUC-TBS": {
       "destination_name": "TBS",
-      "avg_price_eur": 218.89,
+      "avg_price_eur": 224.1,
       "min_price_eur": 175.0,
-      "max_price_eur": 268.0,
-      "observations": 28,
-      "last_seen_utc": "2026-10-28T13:51:59.125064+00:00"
+      "max_price_eur": 322.0,
+      "observations": 33,
+      "last_seen_utc": "2026-11-02T18:18:18.838677+00:00"
     },
     "MUC-HRG": {
       "destination_name": "HRG",
-      "avg_price_eur": 254.32,
+      "avg_price_eur": 247.46,
       "min_price_eur": 176.0,
       "max_price_eur": 339.0,
-      "observations": 27,
-      "last_seen_utc": "2026-10-28T13:51:59.125168+00:00"
+      "observations": 29,
+      "last_seen_utc": "2026-11-02T18:18:18.838138+00:00"
     },
     "MUC-WRO": {
       "destination_name": "WRO",
-      "avg_price_eur": 176.0,
-      "min_price_eur": 176.0,
+      "avg_price_eur": 171.0,
+      "min_price_eur": 151.0,
       "max_price_eur": 176.0,
-      "observations": 8,
-      "last_seen_utc": "2026-10-26T22:23:43.942252+00:00"
+      "observations": 10,
+      "last_seen_utc": "2026-11-02T18:18:18.837889+00:00"
     },
     "MUC-DBV": {
       "destination_name": "Dubrovnik",
@@ -626,11 +626,11 @@
     },
     "MUC-LIS": {
       "destination_name": "Lissabon",
-      "avg_price_eur": 266.53,
+      "avg_price_eur": 252.79,
       "min_price_eur": 179.0,
       "max_price_eur": 410.0,
-      "observations": 214,
-      "last_seen_utc": "2026-10-28T13:51:59.125185+00:00"
+      "observations": 232,
+      "last_seen_utc": "2026-11-02T18:18:18.838628+00:00"
     },
     "MUC-DRS": {
       "destination_name": "DRS",
@@ -642,27 +642,27 @@
     },
     "MUC-FUE": {
       "destination_name": "Fuerteventura",
-      "avg_price_eur": 185.0,
+      "avg_price_eur": 193.08,
       "min_price_eur": 185.0,
-      "max_price_eur": 185.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124853+00:00"
+      "max_price_eur": 290.0,
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.838640+00:00"
     },
     "MUC-WAW": {
       "destination_name": "Warschau",
-      "avg_price_eur": 177.14,
-      "min_price_eur": 137.0,
-      "max_price_eur": 191.0,
-      "observations": 27,
-      "last_seen_utc": "2026-10-28T13:51:59.124856+00:00"
+      "avg_price_eur": 173.05,
+      "min_price_eur": 129.0,
+      "max_price_eur": 199.0,
+      "observations": 31,
+      "last_seen_utc": "2026-11-02T18:18:18.838289+00:00"
     },
     "MUC-RAK": {
       "destination_name": "Marrakesch",
-      "avg_price_eur": 185.71,
+      "avg_price_eur": 197.0,
       "min_price_eur": 178.0,
-      "max_price_eur": 187.0,
-      "observations": 7,
-      "last_seen_utc": "2026-10-27T13:01:51.235082+00:00"
+      "max_price_eur": 247.0,
+      "observations": 10,
+      "last_seen_utc": "2026-11-02T18:18:18.838537+00:00"
     },
     "MUC-LYS": {
       "destination_name": "LYS",
@@ -682,11 +682,11 @@
     },
     "MUC-VNO": {
       "destination_name": "Vilnius",
-      "avg_price_eur": 186.54,
+      "avg_price_eur": 182.81,
       "min_price_eur": 155.0,
       "max_price_eur": 208.0,
-      "observations": 29,
-      "last_seen_utc": "2026-10-28T13:51:59.124796+00:00"
+      "observations": 33,
+      "last_seen_utc": "2026-11-02T18:18:18.838084+00:00"
     },
     "MUC-LCG": {
       "destination_name": "LCG",
@@ -706,27 +706,27 @@
     },
     "MUC-CAI": {
       "destination_name": "CAI",
-      "avg_price_eur": 205.0,
+      "avg_price_eur": 205.08,
       "min_price_eur": 205.0,
-      "max_price_eur": 205.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124926+00:00"
+      "max_price_eur": 206.0,
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.838349+00:00"
     },
     "MUC-LCA": {
       "destination_name": "Larnaka",
-      "avg_price_eur": 250.54,
-      "min_price_eur": 207.0,
+      "avg_price_eur": 248.79,
+      "min_price_eur": 201.0,
       "max_price_eur": 277.0,
-      "observations": 36,
-      "last_seen_utc": "2026-10-28T13:51:59.125103+00:00"
+      "observations": 38,
+      "last_seen_utc": "2026-11-02T18:18:18.838578+00:00"
     },
     "MUC-MLA": {
       "destination_name": "Malta",
-      "avg_price_eur": 177.43,
+      "avg_price_eur": 175.83,
       "min_price_eur": 149.0,
       "max_price_eur": 208.0,
-      "observations": 21,
-      "last_seen_utc": "2026-10-28T13:51:59.124641+00:00"
+      "observations": 23,
+      "last_seen_utc": "2026-11-02T18:18:18.838030+00:00"
     },
     "FMM-TZL": {
       "destination_name": "TZL",
@@ -738,35 +738,35 @@
     },
     "MUC-OPO": {
       "destination_name": "Porto",
-      "avg_price_eur": 201.88,
+      "avg_price_eur": 197.0,
       "min_price_eur": 157.0,
       "max_price_eur": 218.0,
-      "observations": 16,
-      "last_seen_utc": "2026-10-28T13:51:59.124985+00:00"
+      "observations": 18,
+      "last_seen_utc": "2026-11-02T18:18:18.837936+00:00"
     },
     "FMM-BAK": {
       "destination_name": "BAK",
-      "avg_price_eur": 219.0,
-      "min_price_eur": 219.0,
+      "avg_price_eur": 214.69,
+      "min_price_eur": 163.0,
       "max_price_eur": 219.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.124988+00:00"
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.837967+00:00"
     },
     "FMM-LIS": {
       "destination_name": "Lissabon",
-      "avg_price_eur": 223.0,
-      "min_price_eur": 223.0,
+      "avg_price_eur": 212.43,
+      "min_price_eur": 149.0,
       "max_price_eur": 223.0,
-      "observations": 6,
-      "last_seen_utc": "2026-10-26T05:39:01.709163+00:00"
+      "observations": 7,
+      "last_seen_utc": "2026-11-02T18:18:18.837856+00:00"
     },
     "MUC-CMN": {
       "destination_name": "CMN",
-      "avg_price_eur": 223.85,
+      "avg_price_eur": 222.94,
       "min_price_eur": 210.0,
       "max_price_eur": 225.0,
-      "observations": 13,
-      "last_seen_utc": "2026-10-28T13:51:59.125004+00:00"
+      "observations": 15,
+      "last_seen_utc": "2026-11-02T18:18:18.838458+00:00"
     },
     "MUC-ALY": {
       "destination_name": "ALY",
@@ -786,19 +786,19 @@
     },
     "FMM-SSH": {
       "destination_name": "SSH",
-      "avg_price_eur": 237.0,
-      "min_price_eur": 237.0,
+      "avg_price_eur": 234.58,
+      "min_price_eur": 208.0,
       "max_price_eur": 237.0,
-      "observations": 11,
-      "last_seen_utc": "2026-10-27T21:53:55.663339+00:00"
+      "observations": 12,
+      "last_seen_utc": "2026-11-02T18:18:18.838354+00:00"
     },
     "MUC-GLA": {
       "destination_name": "GLA",
-      "avg_price_eur": 247.53,
+      "avg_price_eur": 247.61,
       "min_price_eur": 244.0,
       "max_price_eur": 249.0,
-      "observations": 17,
-      "last_seen_utc": "2026-10-28T13:51:59.125061+00:00"
+      "observations": 18,
+      "last_seen_utc": "2026-11-02T18:18:18.838547+00:00"
     },
     "MUC-LPA": {
       "destination_name": "Gran Canaria",
@@ -810,11 +810,11 @@
     },
     "MUC-EVN": {
       "destination_name": "EVN",
-      "avg_price_eur": 260.5,
-      "min_price_eur": 249.0,
+      "avg_price_eur": 257.86,
+      "min_price_eur": 205.0,
       "max_price_eur": 280.0,
-      "observations": 32,
-      "last_seen_utc": "2026-10-28T13:51:59.125108+00:00"
+      "observations": 33,
+      "last_seen_utc": "2026-11-02T18:18:18.838340+00:00"
     },
     "MUC-NUE": {
       "destination_name": "NUE",
@@ -826,27 +826,27 @@
     },
     "MUC-DXB": {
       "destination_name": "Dubai",
-      "avg_price_eur": 363.28,
+      "avg_price_eur": 365.85,
       "min_price_eur": 287.0,
-      "max_price_eur": 435.0,
-      "observations": 26,
-      "last_seen_utc": "2026-10-28T13:51:59.125194+00:00"
+      "max_price_eur": 455.0,
+      "observations": 29,
+      "last_seen_utc": "2026-11-02T18:18:18.838763+00:00"
     },
     "MUC-SHJ": {
       "destination_name": "SHJ",
-      "avg_price_eur": 350.78,
+      "avg_price_eur": 355.99,
       "min_price_eur": 288.0,
-      "max_price_eur": 411.0,
-      "observations": 24,
-      "last_seen_utc": "2026-10-28T13:51:59.125188+00:00"
+      "max_price_eur": 426.0,
+      "observations": 28,
+      "last_seen_utc": "2026-11-02T18:18:18.838750+00:00"
     },
     "MUC-REK": {
       "destination_name": "REK",
-      "avg_price_eur": 290.0,
-      "min_price_eur": 290.0,
+      "avg_price_eur": 288.38,
+      "min_price_eur": 269.0,
       "max_price_eur": 290.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.125125+00:00"
+      "observations": 13,
+      "last_seen_utc": "2026-11-02T18:18:18.838604+00:00"
     },
     "MUC-PFO": {
       "destination_name": "Paphos",
@@ -882,11 +882,11 @@
     },
     "MUC-FNC": {
       "destination_name": "Madeira (Funchal)",
-      "avg_price_eur": 278.86,
+      "avg_price_eur": 279.64,
       "min_price_eur": 203.0,
-      "max_price_eur": 328.0,
-      "observations": 20,
-      "last_seen_utc": "2026-10-28T13:51:59.125133+00:00"
+      "max_price_eur": 355.0,
+      "observations": 24,
+      "last_seen_utc": "2026-11-02T18:18:18.838700+00:00"
     },
     "MUC-BUS": {
       "destination_name": "BUS",
@@ -898,19 +898,19 @@
     },
     "MUC-LED": {
       "destination_name": "LED",
-      "avg_price_eur": 406.18,
-      "min_price_eur": 342.0,
+      "avg_price_eur": 400.75,
+      "min_price_eur": 341.0,
       "max_price_eur": 447.0,
-      "observations": 11,
-      "last_seen_utc": "2026-10-28T13:51:59.125171+00:00"
+      "observations": 12,
+      "last_seen_utc": "2026-11-02T18:18:18.838695+00:00"
     },
     "MUC-BAK": {
       "destination_name": "BAK",
-      "avg_price_eur": 342.72,
-      "min_price_eur": 315.0,
+      "avg_price_eur": 337.01,
+      "min_price_eur": 295.0,
       "max_price_eur": 361.0,
-      "observations": 14,
-      "last_seen_utc": "2026-10-28T13:51:59.125157+00:00"
+      "observations": 17,
+      "last_seen_utc": "2026-11-02T18:18:18.838690+00:00"
     },
     "FMM-BUS": {
       "destination_name": "BUS",
@@ -922,19 +922,19 @@
     },
     "MUC-MOW": {
       "destination_name": "MOW",
-      "avg_price_eur": 468.5,
+      "avg_price_eur": 469.95,
       "min_price_eur": 379.0,
       "max_price_eur": 574.0,
-      "observations": 20,
-      "last_seen_utc": "2026-10-28T13:51:59.125209+00:00"
+      "observations": 21,
+      "last_seen_utc": "2026-11-02T18:18:18.838783+00:00"
     },
     "MUC-NQZ": {
       "destination_name": "NQZ",
-      "avg_price_eur": 378.25,
+      "avg_price_eur": 379.94,
       "min_price_eur": 355.0,
-      "max_price_eur": 386.0,
-      "observations": 16,
-      "last_seen_utc": "2026-10-28T13:51:59.125182+00:00"
+      "max_price_eur": 407.0,
+      "observations": 17,
+      "last_seen_utc": "2026-11-02T18:18:18.838729+00:00"
     },
     "MUC-RZE": {
       "destination_name": "RZE",
@@ -954,11 +954,11 @@
     },
     "MUC-NYC": {
       "destination_name": "NYC",
-      "avg_price_eur": 414.5,
+      "avg_price_eur": 421.21,
       "min_price_eur": 414.0,
-      "max_price_eur": 418.0,
-      "observations": 12,
-      "last_seen_utc": "2026-10-28T13:51:59.125191+00:00"
+      "max_price_eur": 486.0,
+      "observations": 14,
+      "last_seen_utc": "2026-11-02T18:18:18.838775+00:00"
     },
     "FMM-NQZ": {
       "destination_name": "NQZ",
@@ -1018,11 +1018,11 @@
     },
     "FMM-LPA": {
       "destination_name": "Gran Canaria",
-      "avg_price_eur": 176.27,
+      "avg_price_eur": 177.66,
       "min_price_eur": 165.0,
       "max_price_eur": 193.0,
-      "observations": 11,
-      "last_seen_utc": "2026-10-28T13:51:59.124879+00:00"
+      "observations": 12,
+      "last_seen_utc": "2026-11-02T18:18:18.838253+00:00"
     },
     "MUC-ACE": {
       "destination_name": "Lanzarote",
@@ -1045,8 +1045,8 @@
       "avg_price_eur": 157.0,
       "min_price_eur": 157.0,
       "max_price_eur": 157.0,
-      "observations": 8,
-      "last_seen_utc": "2026-10-28T13:51:59.124668+00:00"
+      "observations": 9,
+      "last_seen_utc": "2026-11-02T18:18:18.837917+00:00"
     },
     "FMM-PAR": {
       "destination_name": "PAR",
@@ -1066,11 +1066,11 @@
     },
     "MUC-AUH": {
       "destination_name": "Abu Dhabi",
-      "avg_price_eur": 326.14,
+      "avg_price_eur": 339.0,
       "min_price_eur": 326.0,
-      "max_price_eur": 327.0,
-      "observations": 7,
-      "last_seen_utc": "2026-10-28T13:51:59.125154+00:00"
+      "max_price_eur": 413.0,
+      "observations": 10,
+      "last_seen_utc": "2026-11-02T18:18:18.838738+00:00"
     },
     "MUC-MIR": {
       "destination_name": "MIR",
@@ -1125,80 +1125,80 @@
       "avg_price_eur": 107.0,
       "min_price_eur": 107.0,
       "max_price_eur": 107.0,
-      "observations": 4,
-      "last_seen_utc": "2026-10-28T13:51:59.124362+00:00"
+      "observations": 5,
+      "last_seen_utc": "2026-11-02T18:18:18.837540+00:00"
     },
     "FMM-RIX": {
       "destination_name": "Riga",
       "avg_price_eur": 116.0,
       "min_price_eur": 116.0,
       "max_price_eur": 116.0,
-      "observations": 4,
-      "last_seen_utc": "2026-10-28T13:51:59.124438+00:00"
+      "observations": 5,
+      "last_seen_utc": "2026-11-02T18:18:18.837669+00:00"
     },
     "MUC-RHO": {
       "destination_name": "Rhodos",
       "avg_price_eur": 168.0,
       "min_price_eur": 168.0,
       "max_price_eur": 168.0,
-      "observations": 4,
-      "last_seen_utc": "2026-10-28T13:51:59.124745+00:00"
+      "observations": 5,
+      "last_seen_utc": "2026-11-02T18:18:18.838016+00:00"
     },
     "MUC-SPU": {
       "destination_name": "Split",
-      "avg_price_eur": 172.75,
+      "avg_price_eur": 172.8,
       "min_price_eur": 172.0,
       "max_price_eur": 173.0,
-      "observations": 4,
-      "last_seen_utc": "2026-10-28T13:51:59.124782+00:00"
+      "observations": 5,
+      "last_seen_utc": "2026-11-02T18:18:18.838061+00:00"
     },
     "FMM-AYT": {
       "destination_name": "Antalya",
-      "avg_price_eur": 256.75,
+      "avg_price_eur": 262.83,
       "min_price_eur": 256.0,
-      "max_price_eur": 257.0,
-      "observations": 4,
-      "last_seen_utc": "2026-10-28T13:51:59.125078+00:00"
+      "max_price_eur": 293.0,
+      "observations": 6,
+      "last_seen_utc": "2026-11-02T18:18:18.838645+00:00"
     },
     "FMM-GHV": {
       "destination_name": "GHV",
-      "avg_price_eur": 62.67,
+      "avg_price_eur": 62.5,
       "min_price_eur": 62.0,
       "max_price_eur": 63.0,
-      "observations": 3,
-      "last_seen_utc": "2026-10-28T13:51:59.124249+00:00"
+      "observations": 4,
+      "last_seen_utc": "2026-11-02T18:18:18.837319+00:00"
     },
     "MUC-DUS": {
       "destination_name": "DUS",
-      "avg_price_eur": 169.0,
+      "avg_price_eur": 172.0,
       "min_price_eur": 169.0,
-      "max_price_eur": 169.0,
-      "observations": 3,
-      "last_seen_utc": "2026-10-28T13:51:59.124749+00:00"
+      "max_price_eur": 181.0,
+      "observations": 4,
+      "last_seen_utc": "2026-11-02T18:18:18.838142+00:00"
     },
     "MUC-AMS": {
       "destination_name": "Amsterdam",
       "avg_price_eur": 178.0,
       "min_price_eur": 178.0,
       "max_price_eur": 178.0,
-      "observations": 3,
-      "last_seen_utc": "2026-10-28T13:51:59.124808+00:00"
+      "observations": 5,
+      "last_seen_utc": "2026-11-02T18:18:18.838102+00:00"
     },
     "MUC-PMF": {
       "destination_name": "PMF",
       "avg_price_eur": 138.0,
       "min_price_eur": 138.0,
       "max_price_eur": 138.0,
-      "observations": 1,
-      "last_seen_utc": "2026-10-28T13:51:59.124553+00:00"
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.837775+00:00"
     },
     "MUC-OLB": {
       "destination_name": "OLB",
       "avg_price_eur": 171.0,
       "min_price_eur": 171.0,
       "max_price_eur": 171.0,
-      "observations": 1,
-      "last_seen_utc": "2026-10-28T13:51:59.124762+00:00"
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.838040+00:00"
     },
     "FMM-BCN": {
       "destination_name": "Barcelona",
@@ -1213,32 +1213,256 @@
       "avg_price_eur": 204.0,
       "min_price_eur": 204.0,
       "max_price_eur": 204.0,
-      "observations": 1,
-      "last_seen_utc": "2026-10-28T13:51:59.124918+00:00"
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.838335+00:00"
     },
     "MUC-BRI": {
       "destination_name": "Bari",
-      "avg_price_eur": 211.0,
-      "min_price_eur": 211.0,
+      "avg_price_eur": 210.5,
+      "min_price_eur": 210.0,
       "max_price_eur": 211.0,
-      "observations": 1,
-      "last_seen_utc": "2026-10-28T13:51:59.124966+00:00"
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.838387+00:00"
     },
     "MUC-BGW": {
       "destination_name": "BGW",
-      "avg_price_eur": 223.0,
-      "min_price_eur": 223.0,
+      "avg_price_eur": 216.0,
+      "min_price_eur": 209.0,
       "max_price_eur": 223.0,
-      "observations": 1,
-      "last_seen_utc": "2026-10-28T13:51:59.124996+00:00"
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.838373+00:00"
     },
     "FMM-IZM": {
       "destination_name": "IZM",
-      "avg_price_eur": 336.0,
-      "min_price_eur": 336.0,
+      "avg_price_eur": 335.5,
+      "min_price_eur": 335.0,
       "max_price_eur": 336.0,
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.838686+00:00"
+    },
+    "MUC-BRS": {
+      "destination_name": "BRS",
+      "avg_price_eur": 87.0,
+      "min_price_eur": 87.0,
+      "max_price_eur": 87.0,
       "observations": 1,
-      "last_seen_utc": "2026-10-28T13:51:59.125160+00:00"
+      "last_seen_utc": "2026-11-02T18:18:18.837416+00:00"
+    },
+    "FMM-MIL": {
+      "destination_name": "MIL",
+      "avg_price_eur": 98.0,
+      "min_price_eur": 91.0,
+      "max_price_eur": 105.0,
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.837534+00:00"
+    },
+    "FMM-VIE": {
+      "destination_name": "Wien",
+      "avg_price_eur": 142.0,
+      "min_price_eur": 142.0,
+      "max_price_eur": 142.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.837794+00:00"
+    },
+    "FMM-ACE": {
+      "destination_name": "Lanzarote",
+      "avg_price_eur": 147.0,
+      "min_price_eur": 147.0,
+      "max_price_eur": 147.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.837838+00:00"
+    },
+    "MUC-SOF": {
+      "destination_name": "Sofia",
+      "avg_price_eur": 153.0,
+      "min_price_eur": 153.0,
+      "max_price_eur": 153.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.837893+00:00"
+    },
+    "MUC-IZM": {
+      "destination_name": "IZM",
+      "avg_price_eur": 167.0,
+      "min_price_eur": 167.0,
+      "max_price_eur": 167.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838012+00:00"
+    },
+    "MUC-BUD": {
+      "destination_name": "Budapest",
+      "avg_price_eur": 172.0,
+      "min_price_eur": 172.0,
+      "max_price_eur": 172.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838049+00:00"
+    },
+    "MUC-FRA": {
+      "destination_name": "FRA",
+      "avg_price_eur": 173.0,
+      "min_price_eur": 173.0,
+      "max_price_eur": 173.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838057+00:00"
+    },
+    "MUC-CPH": {
+      "destination_name": "Kopenhagen",
+      "avg_price_eur": 183.0,
+      "min_price_eur": 183.0,
+      "max_price_eur": 183.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838160+00:00"
+    },
+    "MUC-CTA": {
+      "destination_name": "Catania (Sizilien)",
+      "avg_price_eur": 190.0,
+      "min_price_eur": 190.0,
+      "max_price_eur": 190.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838225+00:00"
+    },
+    "FMM-BIO": {
+      "destination_name": "BIO",
+      "avg_price_eur": 206.0,
+      "min_price_eur": 206.0,
+      "max_price_eur": 206.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838345+00:00"
+    },
+    "MUC-RVN": {
+      "destination_name": "RVN",
+      "avg_price_eur": 226.5,
+      "min_price_eur": 212.0,
+      "max_price_eur": 241.0,
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.838516+00:00"
+    },
+    "MUC-PMO": {
+      "destination_name": "Palermo (Sizilien)",
+      "avg_price_eur": 212.0,
+      "min_price_eur": 212.0,
+      "max_price_eur": 212.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838404+00:00"
+    },
+    "MUC-HER": {
+      "destination_name": "Heraklion (Kreta)",
+      "avg_price_eur": 218.0,
+      "min_price_eur": 218.0,
+      "max_price_eur": 218.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838427+00:00"
+    },
+    "MUC-FMM": {
+      "destination_name": "Memmingen",
+      "avg_price_eur": 246.0,
+      "min_price_eur": 246.0,
+      "max_price_eur": 246.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838529+00:00"
+    },
+    "MUC-BSZ": {
+      "destination_name": "BSZ",
+      "avg_price_eur": 270.0,
+      "min_price_eur": 270.0,
+      "max_price_eur": 270.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838609+00:00"
+    },
+    "MUC-AGA": {
+      "destination_name": "Agadir",
+      "avg_price_eur": 272.0,
+      "min_price_eur": 272.0,
+      "max_price_eur": 272.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838619+00:00"
+    },
+    "MUC-GRX": {
+      "destination_name": "GRX",
+      "avg_price_eur": 284.0,
+      "min_price_eur": 284.0,
+      "max_price_eur": 284.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838632+00:00"
+    },
+    "FMM-MOW": {
+      "destination_name": "MOW",
+      "avg_price_eur": 360.0,
+      "min_price_eur": 360.0,
+      "max_price_eur": 360.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838704+00:00"
+    },
+    "MUC-GZP": {
+      "destination_name": "GZP",
+      "avg_price_eur": 396.0,
+      "min_price_eur": 396.0,
+      "max_price_eur": 396.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838725+00:00"
+    },
+    "MUC-DJE": {
+      "destination_name": "DJE",
+      "avg_price_eur": 414.0,
+      "min_price_eur": 413.0,
+      "max_price_eur": 415.0,
+      "observations": 2,
+      "last_seen_utc": "2026-11-02T18:18:18.838742+00:00"
+    },
+    "MUC-KZN": {
+      "destination_name": "KZN",
+      "avg_price_eur": 425.0,
+      "min_price_eur": 425.0,
+      "max_price_eur": 425.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838747+00:00"
+    },
+    "MUC-FAE": {
+      "destination_name": "FAE",
+      "avg_price_eur": 430.0,
+      "min_price_eur": 430.0,
+      "max_price_eur": 430.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838755+00:00"
+    },
+    "MUC-LYR": {
+      "destination_name": "LYR",
+      "avg_price_eur": 464.0,
+      "min_price_eur": 464.0,
+      "max_price_eur": 464.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838768+00:00"
+    },
+    "MUC-BOS": {
+      "destination_name": "Boston",
+      "avg_price_eur": 477.0,
+      "min_price_eur": 477.0,
+      "max_price_eur": 477.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838771+00:00"
+    },
+    "MUC-TAS": {
+      "destination_name": "TAS",
+      "avg_price_eur": 497.0,
+      "min_price_eur": 497.0,
+      "max_price_eur": 497.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838779+00:00"
+    },
+    "FMM-SHJ": {
+      "destination_name": "SHJ",
+      "avg_price_eur": 552.0,
+      "min_price_eur": 552.0,
+      "max_price_eur": 552.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838788+00:00"
+    },
+    "FMM-TAS": {
+      "destination_name": "TAS",
+      "avg_price_eur": 672.0,
+      "min_price_eur": 672.0,
+      "max_price_eur": 672.0,
+      "observations": 1,
+      "last_seen_utc": "2026-11-02T18:18:18.838791+00:00"
     }
   },
   "notified_deals": {
@@ -1250,7 +1474,7 @@
     },
     "FMM-BBU:2026-12-04:2026-12-17": {
       "price_eur": 29.98,
-      "notified_at_utc": "2026-10-25T18:19:03.911280+00:00",
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
       "destination": "BBU",
       "destination_name": "Bukarest"
     },
@@ -1267,8 +1491,8 @@
       "destination_name": "Banja Luka"
     },
     "FMM-MLA:2026-12-07:2026-12-11": {
-      "price_eur": 36.0,
-      "notified_at_utc": "2026-10-25T18:19:03.911280+00:00",
+      "price_eur": 45.0,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
       "destination": "MLA",
       "destination_name": "Malta"
     },
@@ -1291,8 +1515,8 @@
       "destination_name": "LON"
     },
     "FMM-ALC:2027-01-08:2027-01-15": {
-      "price_eur": 40.98,
-      "notified_at_utc": "2026-10-25T18:19:03.911280+00:00",
+      "price_eur": 43.98,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
       "destination": "ALC",
       "destination_name": "Alicante"
     },
@@ -1351,8 +1575,8 @@
       "destination_name": "Sofia"
     },
     "FMM-TGD:2026-12-03:2026-12-10": {
-      "price_eur": 48.0,
-      "notified_at_utc": "2026-10-25T20:30:04.893018+00:00",
+      "price_eur": 49.0,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
       "destination": "TGD",
       "destination_name": "Podgorica"
     },
@@ -1591,8 +1815,8 @@
       "destination_name": "Alicante"
     },
     "FMM-BBU:2027-02-05:2027-02-15": {
-      "price_eur": 41.94,
-      "notified_at_utc": "2026-10-26T13:58:55.144482+00:00",
+      "price_eur": 38.61,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
       "destination": "BBU",
       "destination_name": "Bukarest"
     },
@@ -1841,7 +2065,37 @@
       "notified_at_utc": "2026-10-28T13:52:00.188902+00:00",
       "destination": "BBU",
       "destination_name": "Bukarest"
+    },
+    "FMM-AGP:2026-12-14:2026-12-18": {
+      "price_eur": 41.98,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
+      "destination": "AGP",
+      "destination_name": "Málaga"
+    },
+    "FMM-ROM:2026-11-07:2026-11-13": {
+      "price_eur": 55.0,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
+      "destination": "ROM",
+      "destination_name": "ROM"
+    },
+    "FMM-AGP:2026-12-07:2026-12-18": {
+      "price_eur": 47.6,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
+      "destination": "AGP",
+      "destination_name": "Málaga"
+    },
+    "FMM-ALC:2026-12-06:2026-12-17": {
+      "price_eur": 48.98,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
+      "destination": "ALC",
+      "destination_name": "Alicante"
+    },
+    "FMM-SKP:2026-12-03:2026-12-07": {
+      "price_eur": 48.0,
+      "notified_at_utc": "2026-11-02T18:18:19.776889+00:00",
+      "destination": "SKP",
+      "destination_name": "Skopje"
     }
   },
-  "last_run_utc": "2026-10-28T13:52:00.188934+00:00"
+  "last_run_utc": "2026-11-02T18:18:19.776938+00:00"
 }
