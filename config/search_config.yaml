@@ -1,4 +1,4 @@
-pause_until: ''
+pause_until: '2026-11-17'
 force_next_discord: false
 departure_airports:
 - code: FMM
