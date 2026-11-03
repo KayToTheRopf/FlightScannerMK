@@ -1,5 +1,10 @@
 # Konfiguration für die automatische Flugpreis-Suche (MUC & FMM)
 
+# Optional: Radar bis einschließlich dieses Datums pausieren (Format: "YYYY-MM-DD", z.B. "2026-11-16", oder "" für aktiv)
+pause_until: ""
+# Wenn true, erzwingt der nächste Suchlauf garantiert eine Discord-Benachrichtigung (ignoriert Cooldown) und setzt sich danach auf false zurück
+force_next_discord: true
+
 departure_airports:
   - code: "FMM"
     name: "Memmingen"

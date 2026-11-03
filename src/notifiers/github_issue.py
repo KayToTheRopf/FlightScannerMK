@@ -101,7 +101,7 @@ class GitHubIssueNotifier:
                 "",
                 "---",
                 "### 💬 Interaktive Steuerung (Rückmeldung geben)",
-                "Du kannst einen einzelnen Deal ausschließen oder deine Wunschliste anpassen:",
+                "Du kannst einen einzelnen Deal ausschließen, deine Wunschliste anpassen oder den Radar pausieren:",
                 "1. **Per 1-Klick:** Klicke in der Tabelle beim Deal auf **`[🚫 Deal ausschließen]`** und bestätige das Ticket.",
                 "2. **Per Kommentar unter diesem Issue (oder per E-Mail-Antwort):**",
                 "   - `/exclude TIA` *(schließt den Flughafen-Code TIA dauerhaft aus)*",
@@ -109,6 +109,8 @@ class GitHubIssueNotifier:
                 "   - `/exclude country:Albanien` *(schließt ein ganzes Land aus)*",
                 "   - `/ignore-deal FMM-PMI:2026-06-10:2026-06-17` *(schließt nur diesen Deal aus)*",
                 "   - `/watch LIS 110 Name=Lissabon` *(fügt ein neues Wunschziel mit Maximalpreis hinzu)*",
+                "   - `/pause 7d` oder `/pause 2026-12-01` *(pausiert den Radar für X Tage oder bis zum Datum)*",
+                "   - `/resume` *(hebt eine aktive Pause sofort wieder auf)*",
             ]
         )
         return "\n".join(lines)

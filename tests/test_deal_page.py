@@ -112,3 +112,44 @@ def test_dispatch_notifications_uses_configured_deal_page_url(monkeypatch) -> No
 
     assert sent_channels == 1
     assert sent == ["https://example.com/deals/"]
+
+
+def test_render_deals_page_displays_exclusions_and_wishlist() -> None:
+    page = render_deals_page(
+        [_deal()],
+        generated_at=datetime(2026, 1, 2, tzinfo=timezone.utc),
+        paused_until="2026-11-20",
+        blacklist={
+            "excluded_airports": ["BNX", "TIA"],
+            "excluded_cities": ["Banja Luka", "Skopje"],
+            "excluded_countries": ["Albanien"],
+        },
+        excluded_deals=["FMM-BNX:2026-12-05:2026-12-11"],
+        wishlist_destinations=[
+            {"code": "PMI", "name": "Palma de Mallorca", "country": "Spanien", "max_price_eur": 65.0},
+        ],
+        departure_airports=[
+            {"code": "FMM", "name": "Memmingen", "max_explore_price_eur": 55.0},
+        ],
+    )
+
+    assert "Pausiert bis einschl. 2026-11-20" in page
+    assert "Ausgeschlossene Ziele &amp; Deals (Blacklist)" in page
+    assert "6 Ausschlüsse aktiv" in page
+    assert "BNX (Banja Luka)" in page
+    assert "TIA (Tirana)" in page
+    assert "Skopje" in page
+    assert "Albanien" in page
+    assert "FMM-BNX:2026-12-05:2026-12-11" in page
+    assert "Palma de Mallorca (PMI, Spanien) ≤ 65 €" in page
+    assert "1 Wunschziele aktiv" in page
+    assert "unwatch%3APMI" in page
+    assert 'id="wishlist-code-input"' in page
+    assert 'id="wishlist-price-input"' in page
+    assert 'id="wishlist-name-input"' in page
+    assert "saveWishlistFromInput()" in page
+    assert "Memmingen (FMM) · Explore ≤ 55 €" in page
+    assert "Test-Discord senden" in page
+    assert "sendTestDiscord(this.href)" in page
+
+

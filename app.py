@@ -24,7 +24,13 @@ from src.handle_feedback import (
     add_deal_exclusion,
     add_exclusion,
     add_or_update_wishlist,
+    get_pause_until,
     load_blacklist,
+    remove_deal_exclusion,
+    remove_exclusion,
+    remove_wishlist,
+    set_radar_pause,
+    trigger_test_discord,
 )
 from src.models import EvaluatedDeal
 from src.run_search import DEFAULT_HISTORY_PATH, load_config
@@ -64,9 +70,54 @@ def get_current_filtered_deals() -> List[EvaluatedDeal]:
 
 
 def get_last_updated_timestamp(path: Path = DEFAULT_ACTIVE_DEALS_PATH) -> datetime:
-    if path.exists():
-        return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+    candidate_paths = [
+        path,
+        DEFAULT_CONFIG_PATH,
+        DEFAULT_BLACKLIST_PATH,
+        DEFAULT_DEAL_EXCLUSIONS_PATH,
+    ]
+    mtimes = [p.stat().st_mtime for p in candidate_paths if p.exists()]
+    if mtimes:
+        return datetime.fromtimestamp(max(mtimes), tz=timezone.utc)
     return datetime.now(timezone.utc)
+
+
+def build_current_deals_page_html() -> str:
+    deals = get_current_filtered_deals()
+    generated_at = get_last_updated_timestamp(DEFAULT_ACTIVE_DEALS_PATH)
+    paused_until = get_pause_until(DEFAULT_CONFIG_PATH)
+    blacklist = load_blacklist(DEFAULT_BLACKLIST_PATH)
+    excluded_deals = load_deal_exclusions(DEFAULT_DEAL_EXCLUSIONS_PATH)
+    config = load_config(DEFAULT_CONFIG_PATH)
+    return render_deals_page(
+        deals,
+        generated_at=generated_at,
+        paused_until=paused_until,
+        blacklist=blacklist,
+        excluded_deals=excluded_deals,
+        wishlist_destinations=config.get("wishlist_destinations", []),
+        departure_airports=config.get("departure_airports", []),
+    )
+
+
+def refresh_static_deals_page() -> None:
+    try:
+        deals = get_current_filtered_deals()
+        paused_until = get_pause_until(DEFAULT_CONFIG_PATH)
+        blacklist = load_blacklist(DEFAULT_BLACKLIST_PATH)
+        excluded_deals = load_deal_exclusions(DEFAULT_DEAL_EXCLUSIONS_PATH)
+        config = load_config(DEFAULT_CONFIG_PATH)
+        write_deals_page(
+            deals,
+            DEFAULT_DEALS_PAGE_PATH,
+            paused_until=paused_until,
+            blacklist=blacklist,
+            excluded_deals=excluded_deals,
+            wishlist_destinations=config.get("wishlist_destinations", []),
+            departure_airports=config.get("departure_airports", []),
+        )
+    except Exception as exc:
+        logger.warning("Konnte statische Deal-Seite nicht aktualisieren: %s", exc)
 
 
 class ReusableThreadingHTTPServer(ThreadingHTTPServer):
@@ -112,23 +163,25 @@ class FlightRadarRequestHandler(BaseHTTPRequestHandler):
             deals = get_current_filtered_deals()
             config = load_config(DEFAULT_CONFIG_PATH)
             blacklist = load_blacklist(DEFAULT_BLACKLIST_PATH)
+            excluded_deals = sorted(load_deal_exclusions(DEFAULT_DEAL_EXCLUSIONS_PATH))
+            paused_until = get_pause_until(DEFAULT_CONFIG_PATH)
             self._send_json(
                 200,
                 {
                     "count": len(deals),
+                    "paused_until": paused_until,
                     "deals": [deal_to_dict(d) for d in deals],
                     "wishlist_destinations": config.get("wishlist_destinations", []),
                     "departure_airports": config.get("departure_airports", []),
                     "blacklist": blacklist,
+                    "excluded_deals": excluded_deals,
                 },
                 head_only=head_only,
             )
             return
 
         if path in ("/", "/index.html"):
-            deals = get_current_filtered_deals()
-            generated_at = get_last_updated_timestamp(DEFAULT_ACTIVE_DEALS_PATH)
-            html_content = render_deals_page(deals, generated_at=generated_at)
+            html_content = build_current_deals_page_html()
             self._send_html(200, html_content, head_only=head_only)
             return
 
@@ -153,15 +206,47 @@ class FlightRadarRequestHandler(BaseHTTPRequestHandler):
                 form = parse_qs(raw_body)
                 data = {k: v[0] for k, v in form.items() if v}
 
+        if parsed.path == "/api/pause":
+            target = str(data.get("target", "")).strip()
+            changed, message = set_radar_pause(target, DEFAULT_CONFIG_PATH)
+            paused_until = get_pause_until(DEFAULT_CONFIG_PATH)
+            if changed:
+                refresh_static_deals_page()
+            self._send_json(
+                200 if changed else 400,
+                {"changed": changed, "message": message, "paused_until": paused_until},
+            )
+            return
+
         if parsed.path == "/api/exclude-deal":
             signature = str(data.get("signature", "")).strip()
             changed, message = add_deal_exclusion(signature, DEFAULT_DEAL_EXCLUSIONS_PATH)
+            if changed:
+                refresh_static_deals_page()
+            self._send_json(200 if changed else 400, {"changed": changed, "message": message})
+            return
+
+        if parsed.path == "/api/unexclude-deal":
+            signature = str(data.get("signature", "")).strip()
+            changed, message = remove_deal_exclusion(signature, DEFAULT_DEAL_EXCLUSIONS_PATH)
+            if changed:
+                refresh_static_deals_page()
             self._send_json(200 if changed else 400, {"changed": changed, "message": message})
             return
 
         if parsed.path == "/api/exclude":
             target = str(data.get("target", "")).strip()
             changed, message = add_exclusion(target, DEFAULT_BLACKLIST_PATH)
+            if changed:
+                refresh_static_deals_page()
+            self._send_json(200 if changed else 400, {"changed": changed, "message": message})
+            return
+
+        if parsed.path == "/api/unexclude":
+            target = str(data.get("target", "")).strip()
+            changed, message = remove_exclusion(target, DEFAULT_BLACKLIST_PATH)
+            if changed:
+                refresh_static_deals_page()
             self._send_json(200 if changed else 400, {"changed": changed, "message": message})
             return
 
@@ -179,18 +264,42 @@ class FlightRadarRequestHandler(BaseHTTPRequestHandler):
                 name=name,
                 config_path=DEFAULT_CONFIG_PATH,
             )
+            if changed:
+                refresh_static_deals_page()
             self._send_json(200 if changed else 400, {"changed": changed, "message": message})
+            return
+
+        if parsed.path == "/api/unwatch":
+            code = str(data.get("code", "")).strip()
+            changed, message = remove_wishlist(code=code, config_path=DEFAULT_CONFIG_PATH)
+            if changed:
+                refresh_static_deals_page()
+            self._send_json(200 if changed else 400, {"changed": changed, "message": message})
+            return
+
+        if parsed.path == "/api/test-discord":
+            changed, message = trigger_test_discord(
+                config_path=DEFAULT_CONFIG_PATH,
+                blacklist_path=DEFAULT_BLACKLIST_PATH,
+                deal_exclusions_path=DEFAULT_DEAL_EXCLUSIONS_PATH,
+            )
+            if changed:
+                refresh_static_deals_page()
+            self._send_json(
+                200 if changed else 400,
+                {
+                    "changed": changed,
+                    "message": message,
+                    "has_webhook": bool(os.getenv("DISCORD_WEBHOOK_URL", "").strip()),
+                },
+            )
             return
 
         self._send_json(404, {"error": "Not found"})
 
 
 def main() -> None:
-    try:
-        current_deals = get_current_filtered_deals()
-        write_deals_page(current_deals, DEFAULT_DEALS_PAGE_PATH)
-    except Exception as exc:
-        logger.warning("Konnte statische Deal-Seite nicht vorab schreiben: %s", exc)
+    refresh_static_deals_page()
 
     port = int(os.environ.get("PORT", "3000"))
     host = os.environ.get("HOST", "0.0.0.0")

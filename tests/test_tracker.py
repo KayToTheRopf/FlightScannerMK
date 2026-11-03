@@ -127,7 +127,7 @@ def test_deal_analyzer_filters_and_scores(tmp_path: Path) -> None:
     # Wunschziel LIS mit hoher historischer Ersparnis sollte auf Platz 1 stehen
     assert deals[0].offer.destination == "LIS"
     assert "unter Ø-Routenpreis" in deals[0].reason
-    assert "exclude%3ALIS" in deals[0].exclude_url
+    assert "ignore-deal%3AMUC-LIS" in deals[0].exclude_url
 
     # Cooldown-Test: Nach dem Markieren darf derselbe Deal im nächsten Lauf nicht sofort wieder erscheinen
     analyzer.mark_deals_notified(deals)
@@ -161,6 +161,80 @@ def test_feedback_handler_updates_blacklist_and_wishlist(tmp_path: Path) -> None
     codes = {w["code"]: w["max_price_eur"] for w in updated_cfg["wishlist_destinations"]}
     assert codes["ATH"] == 90.0
 
+    # Test 2: Deal ausschließen und anschließend Ort & Deal wieder freigeben (unexclude)
+    deal_ex_path = tmp_path / "deal_exclusions.json"
+    un_input = (
+        "ignore-deal:FMM-BNX:2026-12-05:2026-12-11\n"
+        "unexclude:STN\n"
+        "/unexclude Tirana\n"
+        "unexclude-deal:FMM-BNX:2026-12-05:2026-12-11"
+    )
+    un_messages = parse_and_execute_feedback(
+        un_input,
+        blacklist_path=bl_path,
+        config_path=cfg_path,
+        deal_exclusions_path=deal_ex_path,
+    )
+    assert len(un_messages) == 4
+    bl_after = json.loads(bl_path.read_text(encoding="utf-8"))
+    assert "STN" not in bl_after["excluded_airports"]
+    assert "Tirana" not in bl_after["excluded_cities"]
+    assert "Albanien" in bl_after["excluded_countries"]
+    deal_ex_after = json.loads(deal_ex_path.read_text(encoding="utf-8"))
+    assert deal_ex_after["excluded_signatures"] == []
+
+    # Test 3: Wunschziel per 1-Klick-Titel hinzufügen/ändern ("watch:LIS:105:Lissabon") und entfernen ("unwatch:ATH")
+    watch_messages = parse_and_execute_feedback(
+        "watch:LIS:105:Lissabon\nunwatch:ATH",
+        blacklist_path=bl_path,
+        config_path=cfg_path,
+    )
+    assert len(watch_messages) == 2
+    cfg_after_watch = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
+    codes_after = {w["code"]: w["max_price_eur"] for w in cfg_after_watch["wishlist_destinations"]}
+    assert codes_after["LIS"] == 105.0
+    assert "ATH" not in codes_after
+
+
+def test_feedback_handler_pause_and_resume(tmp_path: Path) -> None:
+    from datetime import date
+    from src.handle_feedback import get_pause_until
+
+    bl_path = tmp_path / "blacklist.json"
+    cfg_path = tmp_path / "search_config.yaml"
+
+    bl_path.write_text(
+        json.dumps({"excluded_airports": [], "excluded_cities": [], "excluded_countries": []}),
+        encoding="utf-8",
+    )
+    cfg_path.write_text(yaml.safe_dump(_sample_config(), allow_unicode=True), encoding="utf-8")
+
+    ref_today = date(2026, 11, 2)
+    assert get_pause_until(cfg_path, today=ref_today) is None
+
+    # 1) Für 7 Tage pausieren per Kommentar
+    msgs = parse_and_execute_feedback("/pause 7d", blacklist_path=bl_path, config_path=cfg_path, today=ref_today)
+    assert len(msgs) == 1
+    assert get_pause_until(cfg_path, today=ref_today) == "2026-11-09"
+    # Nach Ablauf der Pause (am 10.11.) automatisch wieder aktiv
+    assert get_pause_until(cfg_path, today=date(2026, 11, 10)) is None
+
+    # 2) Bis festes Datum pausieren per Issue-Titel
+    msgs = parse_and_execute_feedback("pause: 2026-12-01", blacklist_path=bl_path, config_path=cfg_path, today=ref_today)
+    assert len(msgs) == 1
+    assert get_pause_until(cfg_path, today=ref_today) == "2026-12-01"
+
+    # 3) Sofort wieder fortsetzen per /resume
+    msgs = parse_and_execute_feedback("/resume", blacklist_path=bl_path, config_path=cfg_path, today=ref_today)
+    assert len(msgs) == 1
+    assert get_pause_until(cfg_path, today=ref_today) is None
+
+    # 4) Test-Discord anfordern per "test-discord" / "/test-discord"
+    msgs_discord = parse_and_execute_feedback("test-discord", blacklist_path=bl_path, config_path=cfg_path, today=ref_today)
+    assert len(msgs_discord) == 1
+    cfg_after_discord = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
+    assert cfg_after_discord.get("force_next_discord") is True
+
 
 def test_github_markdown_report_contains_exclude_link() -> None:
     offer = FlightOffer(
@@ -190,7 +264,7 @@ def test_github_markdown_report_contains_exclude_link() -> None:
     )
     md = GitHubIssueNotifier.format_markdown_report([deal])
     assert "Palma de Mallorca" in md
-    assert "🚫 Ort ausschließen" in md
+    assert "🚫 Deal ausschließen" in md
     assert "exclude%3APMI" in md
 
 

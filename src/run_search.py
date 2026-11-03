@@ -20,6 +20,7 @@ from src.active_deals import (
 )
 from src.analyzer import DealAnalyzer
 from src.deal_page import get_deals_page_url, write_deals_page
+from src.handle_feedback import get_pause_until, load_blacklist
 from src.models import EvaluatedDeal, FlightOffer
 from src.notifiers.discord import DiscordNotifier
 from src.notifiers.email_smtp import EmailSmtpNotifier
@@ -105,7 +106,10 @@ def dispatch_notifications(config: dict, deals: List[EvaluatedDeal], dry_run: bo
     sent_channels = 0
 
     if notif_cfg.get("discord", {}).get("enabled", True):
-        page_url = get_deals_page_url(configured_url=os.getenv("FLIGHT_DEALS_PAGE_URL", ""))
+        page_url = (
+            get_deals_page_url(configured_url=os.getenv("FLIGHT_DEALS_PAGE_URL", ""))
+            or get_deals_page_url(repository="KayToTheRopf/FlightScannerMK")
+        )
         if DiscordNotifier().send_deal_summary(deals, page_url):
             sent_channels += 1
 
@@ -130,6 +134,8 @@ def main(argv: List[str] | None = None) -> int:
     parser.add_argument("--deal-exclusions", type=Path, default=DEFAULT_DEAL_EXCLUSIONS_PATH, help="Pfad zu Deal-Ausschlüssen")
     parser.add_argument("--deals-page", type=Path, default=DEFAULT_DEALS_PAGE_PATH, help="Pfad zur HTML-Deal-Seite")
     parser.add_argument("--dry-run", action="store_true", help="Führt Suche & Bewertung aus, sendet aber keine Nachrichten")
+    parser.add_argument("--force", action="store_true", help="Führt Suche auch dann aus, wenn der Radar aktuell pausiert ist")
+    parser.add_argument("--force-notify", action="store_true", help="Erzwingt Discord-Benachrichtigung auch bei Cooldown")
     parser.add_argument("--verbose", action="store_true", help="Detailliertes Debug-Logging aktivieren")
     args = parser.parse_args(argv)
 
@@ -139,35 +145,103 @@ def main(argv: List[str] | None = None) -> int:
     )
 
     config = load_config(args.config)
+    force_next_discord = bool(config.get("force_next_discord", False))
+    force_notify = (
+        args.force_notify
+        or force_next_discord
+        or os.getenv("GITHUB_EVENT_NAME", "").strip() == "workflow_dispatch"
+    )
+
     analyzer = DealAnalyzer(
         config=config,
         blacklist_path=args.blacklist,
         history_path=args.history,
     )
+    blacklist_data = load_blacklist(args.blacklist)
+    excluded_signatures = load_deal_exclusions(args.deal_exclusions)
+
+    pause_until = get_pause_until(args.config)
+    if pause_until and not args.force and not force_notify:
+        logging.info(
+            "⏸️ Flug-Schnäppchen-Radar ist bis einschließlich %s pausiert. Überspringe Flugsuche und Benachrichtigungen.",
+            pause_until,
+        )
+        if not args.dry_run:
+            existing_deals = [
+                d
+                for d in load_active_deals(args.active_deals)
+                if d.offer.deal_signature not in excluded_signatures and not analyzer.is_blacklisted(d.offer)
+            ]
+            save_active_deals(existing_deals, args.active_deals)
+            write_deals_page(
+                existing_deals,
+                args.deals_page,
+                paused_until=pause_until,
+                blacklist=blacklist_data,
+                excluded_deals=excluded_signatures,
+                wishlist_destinations=config.get("wishlist_destinations", []),
+                departure_airports=config.get("departure_airports", []),
+            )
+        return 0
 
     offers = collect_all_offers(config)
     logging.info("Insgesamt %d Flugangebote über alle aktiven Provider gesammelt.", len(offers))
 
-    deals = analyzer.evaluate_offers(offers, include_on_cooldown=True, apply_limits=False)
+    deals = [
+        d
+        for d in analyzer.evaluate_offers(offers, include_on_cooldown=True, apply_limits=False)
+        if d.offer.deal_signature not in excluded_signatures
+    ]
     logging.info("%d Angebote als echte Schnäppchen eingestuft.", len(deals))
 
     notification_deals = analyzer.select_notification_deals(deals)
     logging.info("%d neue Schnäppchen für Benachrichtigungen ausgewählt.", len(notification_deals))
 
-    if not args.dry_run:
-        active_deals = merge_active_deals(
-            existing=load_active_deals(args.active_deals),
-            current=deals,
-            excluded_signatures=load_deal_exclusions(args.deal_exclusions),
-            today=date.today(),
+    filtered_existing = [
+        d
+        for d in load_active_deals(args.active_deals)
+        if d.offer.deal_signature not in excluded_signatures and not analyzer.is_blacklisted(d.offer)
+    ]
+    active_deals = merge_active_deals(
+        existing=filtered_existing,
+        current=deals,
+        excluded_signatures=excluded_signatures,
+        today=date.today(),
+    )
+
+    if force_notify and not notification_deals:
+        fallback_pool = deals if deals else active_deals
+        notification_deals = analyzer._limit_deals(fallback_pool)
+        logging.info(
+            "🔔 Test-/Force-Modus aktiv: %d Top-Schnäppchen trotz Cooldown für Discord ausgewählt.",
+            len(notification_deals),
         )
+
+    if not args.dry_run:
         save_active_deals(active_deals, args.active_deals)
-        write_deals_page(active_deals, args.deals_page)
+        write_deals_page(
+            active_deals,
+            args.deals_page,
+            paused_until=pause_until,
+            blacklist=blacklist_data,
+            excluded_deals=excluded_signatures,
+            wishlist_destinations=config.get("wishlist_destinations", []),
+            departure_airports=config.get("departure_airports", []),
+        )
         logging.info("%d aktive Deals auf der Deal-Seite gespeichert.", len(active_deals))
 
     sent_channels = dispatch_notifications(config, notification_deals, dry_run=args.dry_run)
     if notification_deals and sent_channels > 0:
         analyzer.mark_deals_notified(notification_deals)
+
+    if force_next_discord and not args.dry_run:
+        config["force_next_discord"] = False
+        try:
+            with args.config.open("w", encoding="utf-8") as f:
+                yaml.safe_dump(config, f, allow_unicode=True, sort_keys=False)
+            logging.info("Flag 'force_next_discord' in %s nach Testlauf wieder auf false zurückgesetzt.", args.config)
+        except Exception as exc:
+            logging.warning("Konnte 'force_next_discord' nicht zurücksetzen: %s", exc)
 
     analyzer.save_history()
     return 0

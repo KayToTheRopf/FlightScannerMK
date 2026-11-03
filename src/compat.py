@@ -139,6 +139,8 @@ class _FallbackRequestsModule:
 class _FallbackYamlModule:
     @staticmethod
     def safe_load(stream: Any) -> Dict[str, Any]:
+        import re
+
         raw = stream.read() if hasattr(stream, "read") else str(stream)
         raw_str = raw.strip()
         if not raw_str:
@@ -146,7 +148,61 @@ class _FallbackYamlModule:
         try:
             return json.loads(raw_str)
         except Exception:
-            return json.loads(json.dumps(DEFAULT_FLIGHT_CONFIG))
+            pass
+
+        cfg: Dict[str, Any] = json.loads(json.dumps(DEFAULT_FLIGHT_CONFIG))
+
+        m_pause = re.search(r'^\s*pause_until\s*:\s*["\']?([^"\'\n#]*)["\']?', raw_str, flags=re.MULTILINE)
+        if m_pause:
+            cfg["pause_until"] = m_pause.group(1).strip()
+
+        m_force = re.search(r'^\s*force_next_discord\s*:\s*(true|false)', raw_str, flags=re.MULTILINE | re.IGNORECASE)
+        if m_force:
+            cfg["force_next_discord"] = m_force.group(1).strip().lower() == "true"
+
+        # Parse wishlist_destinations block if present
+        m_wish_sec = re.search(
+            r"^wishlist_destinations\s*:\s*\n((?:^[ \t]+.*\n?)*)",
+            raw_str,
+            flags=re.MULTILINE,
+        )
+        if m_wish_sec:
+            block = m_wish_sec.group(1)
+            items = []
+            current: Dict[str, Any] = {}
+            for line in block.splitlines():
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#"):
+                    continue
+                if stripped.startswith("- "):
+                    if current:
+                        items.append(current)
+                    current = {}
+                    stripped = stripped[2:].strip()
+                if ":" in stripped:
+                    k, v = stripped.split(":", 1)
+                    k = k.strip()
+                    v = re.sub(r"\s+#.*$", "", v).strip()
+                    if v.startswith("[") and v.endswith("]"):
+                        try:
+                            current[k] = json.loads(v)
+                        except Exception:
+                            current[k] = [x.strip().strip("\"'") for x in v[1:-1].split(",") if x.strip()]
+                    else:
+                        v_clean = v.strip("\"'")
+                        if k in ("max_price_eur", "max_explore_price_eur"):
+                            try:
+                                current[k] = float(v_clean)
+                            except ValueError:
+                                current[k] = v_clean
+                        else:
+                            current[k] = v_clean
+            if current:
+                items.append(current)
+            if items or "[]" in m_wish_sec.group(0):
+                cfg["wishlist_destinations"] = items
+
+        return cfg
 
     @staticmethod
     def safe_dump(data: Any, stream: Any = None, **kwargs: Any) -> str:
@@ -154,6 +210,7 @@ class _FallbackYamlModule:
         if stream is not None and hasattr(stream, "write"):
             stream.write(text)
         return text
+
 
 
 try:
